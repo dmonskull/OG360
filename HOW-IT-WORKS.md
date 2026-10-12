@@ -109,6 +109,16 @@ a call goes like this:
 
 that gate only does cdecl. for everything else +0x00 points at a second gate in 9 to 11 more padding runs. it saves esp, copies the 6 args again, loads eax ecx edx esi edi from +0x2C, calls the real target at +0x28 and then puts esp back, so it doesnt matter who pops the args. it also keeps edx at +0x68 and pops a float result off the x87 stack into +0x70. its bytes are `THUNK` in `og360/og/xefu/kernel_apc.py`.
 
+### ebx, ebp and xmm registers
+
+those two gates live in tiny kernel gaps and use ebx and ebp to find their way back after the call, so those cant carry args, and theres no room for xmm. for calls that need them OG360 builds a bigger third gate:
+
+- it goes in the games own padding between functions: int3 or nop runs right after a `ret` or `jmp`, ending on a 16 byte boundary, at least 14 bytes each, chained with jumps. the game never runs those bytes so xefu converts the gate fresh the first time. its found and built for whatever game is running, so nothing gets ported per game.
+- gate 1 calls it through the requests first word, same as the register gate.
+- it keeps the stack pointer and the request in a 64 byte mailbox right after the request (that whole 256 bytes has to read all zeros first, so its nothing the game uses), which frees every register for args.
+- it does `fxsave` of the games x87/sse state, `fninit` plus the games control word, loads xmm0-3 (single floats) from the mailbox, loads eax ecx edx esi edi from the request and ebx ebp from the mailbox, calls the target, keeps edx, xmm0 and any st0 float, then `fxrstor` and returns to gate 1.
+- its never written back. if a gap ever held code that ran, xefu keeps that old version, so a new copy only ever goes in gaps that are still pure padding.
+
 ### calling between frames
 
 calling right away runs your function in the middle of whatever that thread was doing. its safer to run it between frames:
@@ -147,7 +157,7 @@ all hex:
 - new code does run if its somewhere that never had code, like int3 padding, and you get there through a pointer read at runtime, like the apc or a function pointer in data. thats how to change what the game does while its running.
 - swapping a return address on the stack doesnt work, xefu checks returns against its own copy.
 - xefu only runs code in the ranges it registered (the games xbe sections and the kernels code) so your target has to be in there.
-- max 6 stack args plus eax ecx edx esi edi. no ebx or ebp and no xmm, and halo 2 passes floats in xmm a lot.
+- max 6 stack args plus eax ecx edx esi edi ebx ebp and xmm0-3 as single floats. no wider xmm values, and only xmm0 comes back.
 - each call stops the game for a second or two so you cant call stuff every frame.
 - xbdm answers way faster while the console is stopped, so do your checks then.
 

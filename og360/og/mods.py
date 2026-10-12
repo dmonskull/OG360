@@ -8,7 +8,8 @@ import time
 from .. import paths
 from ..log import NullLog, describe
 from . import address as expressions, tagnames, values
-from .caller import CONVENTIONS, REGISTERS, TEXTS, address as call_address, float_bits, number, parse_arguments, plan_call
+from .caller import (CONVENTIONS, FULL_GATE_REGISTERS, REGISTERS, TEXTS, XMM, address as call_address, float_bits,
+                     number, parse_arguments, plan_call, xmm_value)
 from .drivers import DRIVERS
 from .guest import Empty
 
@@ -30,12 +31,14 @@ def call_args(args):
             continue
         reg, v = split_arg(a)
         if reg is not None:
-            if reg not in REGISTERS:
-                raise ValueError("%r cant be set, use eax, ecx, edx, esi or edi" % (reg or a))
+            if reg not in REGISTERS + FULL_GATE_REGISTERS + XMM:
+                raise ValueError("%r cant be set, use eax, ecx, edx, esi, edi, ebx, ebp or xmm0 to xmm3" % (reg or a))
             if reg in seen:
                 raise ValueError("%s is set twice" % reg)
             seen.add(reg)
-        if v in TEXTS:
+        if reg in XMM and not v.startswith("="):
+            xmm_value(v)
+        elif v in TEXTS:
             pass
         elif v.lower().startswith("f:"):
             float_bits(v[2:])
@@ -51,7 +54,9 @@ def call_items(args):
     out = []
     for a in args:
         reg, v = split_arg(a)
-        if v in TEXTS:
+        if reg in XMM and not v.startswith("=") and not v.lower().startswith("0x"):
+            out.append(("float", v[2:] if v.lower().startswith("f:") else v, reg))
+        elif v in TEXTS:
             out.append((v[1:], "", reg))
         elif v.lower().startswith("f:"):
             out.append(("float", v[2:], reg))

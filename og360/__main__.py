@@ -37,6 +37,8 @@ def _cli(argv):
                     print("EDX = 0x%08X" % got["edx"])
                 if got.get("float") is not None:
                     print("float result = %r" % got["float"])
+                if got.get("xmm0") is not None:
+                    print("XMM0 = %r" % got["xmm0"])
                 if got.get("timing"):
                     print("Ran: %s" % got["timing"])
                 print("Report: %s" % game.caller.last_report)

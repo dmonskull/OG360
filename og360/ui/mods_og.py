@@ -16,9 +16,10 @@ ADDRESS_NOTE = ("address from ghidra (hex). names and formulas work too: BB85B8 
                 "follow a pointer, datum([array], handle) for halo objects. |0x40 or &~0x08 only flips those bits")
 CALL_NOTE = ("up to 6 stack args, space separated: 50000  0x10  -1  f:1.5 (float)  @string (the text below)  "
              "@wstring (same but utf-16, halo 2 uses it). pick the convention ghidra shows: thiscall = object "
-             "first, fastcall = first two in ecx and edx. for __usercall set registers: eax=5  esi=0x1234. "
+             "first, fastcall = first two in ecx and edx. for __usercall set registers: eax=5  esi=0x1234  ebx=1  ebp=2, "
+             "and float registers xmm0=1.5 to xmm3 (those calls save and restore the games fpu around them). "
              "=address reads a value from the game when the call runs: =car  ecx==[player+234] (0 there stops "
-             "the call). eax, edx and any float result show after")
+             "the call). eax, edx, any float result and xmm0 show after")
 CONVENTIONS = list(caller.CONVENTIONS)
 NO_CHECK = "no, just show what eax returns"
 
@@ -614,6 +615,8 @@ class OGModsTab(ScrollFrame):
             extra = "   EDX 0x%08X" % got["edx"] if got.get("edx") is not None else ""
             if got.get("float") is not None:
                 extra += "   float result %r" % got["float"]
+            if got.get("xmm0") is not None:
+                extra += "   XMM0 %r" % got["xmm0"]
             self.call_result.configure(text="%s = %d   %s   signed %d   as float %g%s" % (
                 shown, v["dec"], v["hex"], v["signed"], v["float"], extra), foreground="")
             self.call_detail.configure(text=self._report_text(s))

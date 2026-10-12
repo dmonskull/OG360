@@ -15,6 +15,8 @@ from .xefu.xbe import metadata
 
 MAX_ARGS = 6
 REGISTERS = kernel_apc.REGISTERS
+FULL_GATE_REGISTERS = ('ebx', 'ebp')
+XMM = ('xmm0', 'xmm1', 'xmm2', 'xmm3')
 TEXTS = kernel_apc.TEXTS
 CONVENTIONS = {'cdecl': (), 'stdcall': (), 'thiscall': ('ecx',), 'fastcall': ('ecx', 'edx')}
 BUSY = ("irql too high", "apc queue is busy",
@@ -43,6 +45,7 @@ HINTS = (
     ("didnt finish exactly once", "check the report before calling again. restart the game if anything looks off"),
     ("still running in the hook", "the function never returned. restart the game before calling again"),
     ("hook code changed", "the games hook bytes are different. restart the game before using a new hook"),
+    ("gaps in the games code for the full gate", "this game has too little padding for ebx, ebp or xmm calls"),
 )
 
 
@@ -90,11 +93,20 @@ def value(text):
     return number(text)
 
 
+def xmm_value(text):
+    if isinstance(text, int):
+        return text & 0xFFFFFFFF
+    t = str(text).strip()
+    if t.lower().startswith('0x'):
+        return number(t)
+    return int(float_bits(t[2:] if t.lower().startswith('f:') else t))
+
+
 def plan_call(target, arguments, convention='cdecl'):
     target = address(target)
     if convention not in CONVENTIONS:
         raise ValueError("convention has to be one of: %s" % ', '.join(CONVENTIONS))
-    args, registers = [], {}
+    args, registers, extra, xmm = [], {}, {}, {}
     for a in arguments:
         reg = None
         if isinstance(a, tuple):
@@ -105,8 +117,16 @@ def plan_call(target, arguments, convention='cdecl'):
             args.append(value(a))
             continue
         reg = reg.strip().lower()
+        if reg in registers or reg in extra or reg in xmm:
+            raise ValueError("%s is set twice" % reg)
+        if reg in XMM:
+            xmm[reg] = xmm_value(a)
+            continue
+        if reg in FULL_GATE_REGISTERS:
+            extra[reg] = number(a)
+            continue
         if reg not in REGISTERS:
-            raise ValueError("%r cant be set, use eax, ecx, edx, esi or edi" % reg)
+            raise ValueError("%r cant be set, use eax, ecx, edx, esi, edi, ebx, ebp or xmm0 to xmm3" % reg)
         if reg in registers:
             raise ValueError("%s is set twice" % reg)
         registers[reg] = value(a.strip() if isinstance(a, str) else a)
@@ -125,8 +145,12 @@ def plan_call(target, arguments, convention='cdecl'):
         raise ValueError("max 6 stack args")
     plain = lambda v: v if v in TEXTS else int(v)
     args, registers = [plain(a) for a in args], {r: plain(v) for r, v in registers.items()}
-    return {'address': target, 'arguments': args, 'registers': registers, 'abi': convention,
-            'fallback': convention == 'cdecl' and not registers}
+    full = None
+    if extra or xmm:
+        top = max([XMM.index(r) for r in xmm] + [-1]) + 1
+        full = {'ebx': extra.get('ebx', 0), 'ebp': extra.get('ebp', 0), 'xmm': [xmm.get(XMM[i], 0) for i in range(top)]}
+    return {'address': target, 'arguments': args, 'registers': registers, 'abi': convention, 'extra': full,
+            'fallback': convention == 'cdecl' and not registers and not full}
 
 
 def float_bits(text):
@@ -330,7 +354,7 @@ class FunctionCaller:
                 target, info['title'] or 'the game', raw[:8].hex(' ').upper()))
 
         gate = None
-        if plan['when'] != 'now':
+        if plan['when'] != 'now' and not plan.get('extra'):
             try:
                 value, gate = game_hook.call(client, plan['address'], plan['arguments'], registers=plan['registers'],
                                              string=string, scratch=scratch, report_path=gate_path,
@@ -343,13 +367,14 @@ class FunctionCaller:
             value, gate = kernel_apc.call(client, plan['address'], plan['arguments'], registers=plan['registers'],
                                           fallback=plan['fallback'], string=string, report_path=gate_path,
                                           before_publish=validate, scratch=scratch, notify=self.log.note,
-                                          when=plan['when'], safe_returns=SAFE_RETURNS.get(title_id, ()))
+                                          when=plan['when'], safe_returns=SAFE_RETURNS.get(title_id, ()),
+                                          extra=plan.get('extra'))
         report['backend'] = gate.get('backend', report['backend'])
         report['eax'] = value
         report['gate_success'] = gate['success']
         self.last_result = {'eax': value, 'edx': gate.get('edx'), 'float': gate.get('float'),
-                            'timing': gate.get('timing')}
-        for key in ('edx', 'float', 'timing', 'safe_point', 'main_thread'):
+                            'xmm0': gate.get('xmm0'), 'timing': gate.get('timing')}
+        for key in ('edx', 'float', 'xmm0', 'full_gate', 'timing', 'safe_point', 'main_thread'):
             if key in gate:
                 report[key] = gate[key]
         for key in ('after', 'cleanup', 'ticks_before', 'ticks_after_cleanup', 'request', 'thread'):

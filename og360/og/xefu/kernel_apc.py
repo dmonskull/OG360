@@ -9,6 +9,7 @@ import time
 from .resolve import PROFILE_BASE, MappingError, Resolver
 from .runtime_discover import discover
 from .xbe import metadata, scratch_candidates
+from . import full_gate
 
 PROFILE = Path(__file__).parent / 'profiles/kernel-apc-xefu7.json'
 PROFILES = {'xefu7': PROFILE, 'xefu1_1': Path(__file__).parent / 'profiles/kernel-apc-xefu1_1.json',
@@ -143,7 +144,7 @@ def main_thread(read, p):
 
 
 def call(client, target, arguments=(), *, registers=None, fallback=False, report_path=None, before_publish=None,
-         scratch=None, string=None, notify=None, when='auto', wait_thread=None, safe_returns=()):
+         scratch=None, string=None, notify=None, when='auto', wait_thread=None, safe_returns=(), extra=None):
     if when not in ('auto', 'safe', 'now'):
         raise ValueError("timing has to be auto, safe or now")
     if len(arguments) > 6 or any(a not in TEXTS and (type(a) is not int or not 0 <= a <= 0xFFFFFFFF) for a in arguments):
@@ -154,6 +155,12 @@ def call(client, target, arguments=(), *, registers=None, fallback=False, report
             raise ValueError("only eax, ecx, edx, esi and edi can be set")
         if any(v not in TEXTS and (type(v) is not int or not 0 <= v <= 0xFFFFFFFF) for v in registers.values()):
             raise ValueError("register values are 32 bit numbers, @string or @wstring")
+    if extra:
+        extra = {'ebx': int(extra.get('ebx', 0)) & 0xFFFFFFFF, 'ebp': int(extra.get('ebp', 0)) & 0xFFFFFFFF,
+                 'xmm': [int(v) & 0xFFFFFFFF for v in extra.get('xmm', ())]}
+        if len(extra['xmm']) > 4:
+            raise ValueError("xmm0 to xmm3 only")
+        registers = dict(registers or {})
     used = set(TEXTS) & set(list(arguments) + list((registers or {}).values()))
     if len(used) > 1:
         raise ValueError("use @string or @wstring, not both (they share the text)")
@@ -181,7 +188,10 @@ def call(client, target, arguments=(), *, registers=None, fallback=False, report
     if registers == {} and fallback and not p.get('thunk_blocks'):
         registers = None
         report['fallback'] = "no register gate here, cdecl only"
-    if registers is not None:
+    if extra:
+        report.update({'backend': 'guest-kernel-normal-apc-v1 + full gate', 'registers': registers,
+                       'extra': {'ebx': extra['ebx'], 'ebp': extra['ebp'], 'xmm': extra['xmm']}})
+    elif registers is not None:
         thunk_blocks = p.get('thunk_blocks')
         if not thunk_blocks:
             raise RuntimeError("only cdecl calls work on %s" % ident.emulator)
@@ -206,7 +216,8 @@ def call(client, target, arguments=(), *, registers=None, fallback=False, report
     resumed = False
     requested = False
     storage_owned = False
-    request = apc = thread = head = None
+    mailbox_owned = False
+    request = apc = thread = head = mailbox = None
 
     def save():
         if report_path:
@@ -236,6 +247,9 @@ def call(client, target, arguments=(), *, registers=None, fallback=False, report
         if request is not None and info['base'] <= request < info['base'] + info['headers_size']:
             at = request - info['base']
             raw[at:at + STORAGE_SIZE] = bytes(min(STORAGE_SIZE, len(raw) - at))
+        if mailbox is not None and info['base'] <= mailbox < info['base'] + info['headers_size']:
+            at = mailbox - info['base']
+            raw[at:at + full_gate.MAILBOX_SIZE] = bytes(min(full_gate.MAILBOX_SIZE, len(raw) - at))
         return hashlib.sha256(bytes(raw)).hexdigest() == info['header_sha256']
 
     def stop(check=True):
@@ -427,21 +441,22 @@ def call(client, target, arguments=(), *, registers=None, fallback=False, report
         r.assert_identity(ident)
         if not header_unchanged():
             raise RuntimeError("the game changed")
-        candidates = [scratch] if scratch is not None else scratch_candidates(info, STORAGE_SIZE)
+        need = STORAGE_SIZE + (full_gate.MAILBOX_SIZE if extra else 0)
+        candidates = [scratch] if scratch is not None else scratch_candidates(info, need)
         for candidate in candidates:
             if type(candidate) is not int or candidate & 15 or candidate + STORAGE_SIZE > 0x100000000:
                 raise ValueError("scratch has to be 16 byte aligned")
-            if (candidate & 4095) + STORAGE_SIZE > 4096:
+            if (candidate & 4095) + need > 4096:
                 continue
             if candidate <= target < candidate + STORAGE_SIZE or any(
                     candidate < b['address'] + len(bytes.fromhex(b['original']))
                     and b['address'] < candidate + STORAGE_SIZE for b in blocks):
                 raise ValueError("scratch overlaps the target or gate")
-            if read(candidate, STORAGE_SIZE) == bytes(STORAGE_SIZE):
+            if read(candidate, need) == bytes(need):
                 request = candidate
                 break
         if request is None:
-            raise RuntimeError("no free space in the xbe header. put a 192 byte area you own in the scratch field")
+            raise RuntimeError("no free space in the xbe header. put a %d byte area you own in the scratch field" % need)
         apc = request + 0x40
         if safe:
             where, busy = why_unsafe(main)
@@ -461,10 +476,20 @@ def call(client, target, arguments=(), *, registers=None, fallback=False, report
             before_publish(r, ident, request)
         report['request'] = request
         report['thread'] = thread
+        entry = None
+        if extra:
+            mailbox = request + STORAGE_SIZE
+            entry, pieces = full_gate.install(read, write, info, ident.stable_key(), mailbox)
+            if not all(any(lo <= a and a + len(raw) <= hi for lo, hi, _ in ranges) for a, raw in pieces):
+                raise RuntimeError("the full gates gaps arent in the code ranges")
+            if any(a <= target < a + len(raw) for a, raw in pieces):
+                raise ValueError("target overlaps the full gate")
+            report['full_gate'] = {'entry': entry, 'mailbox': mailbox, 'gaps': ['%08X' % a for a, _ in pieces]}
+            say("full gate at %08X (%d gaps), mailbox %08X" % (entry, len(pieces), mailbox))
         data = bytearray(STORAGE_SIZE)
         slots = [request + 0x80 if a in TEXTS else a for a in arguments]
         report['resolved_arguments'] = slots
-        struct.pack_into('<10I', data, 0, target if registers is None else thunk_blocks[0]['address'],
+        struct.pack_into('<10I', data, 0, entry if extra else target if registers is None else thunk_blocks[0]['address'],
                          len(arguments), 0xDEADBEEF, 0, *(slots + [0] * (6 - len(arguments))))
         if registers is not None:
             loaded = [request + 0x80 if registers.get(n) in TEXTS else registers.get(n, 0) for n in REGISTERS]
@@ -478,6 +503,9 @@ def call(client, target, arguments=(), *, registers=None, fallback=False, report
             data[0x80:0x80 + len(raw_string)] = raw_string
         storage_owned = True
         write(request, data)
+        if extra:
+            mailbox_owned = True
+            write(mailbox, full_gate.inputs(extra['ebx'], extra['ebp'], extra['xmm']))
         for b, raw in zip(blocks, code):
             original = bytes.fromhex(b['original'])
             if read(b['address'], len(original)) != original:
@@ -519,9 +547,14 @@ def call(client, target, arguments=(), *, registers=None, fallback=False, report
             out = read(request + EDX_OUT, 16)
             report['edx'] = struct.unpack_from('<I', out, 0)[0]
             report['float'] = None if out[8:16] == NO_FLOAT else struct.unpack_from('<d', out, 8)[0]
-            say("done: eax = %d (0x%08X), edx = 0x%08X%s" % (
+            if extra:
+                bits = u32(mailbox + full_gate.XMM0_OUT)
+                report['xmm0_bits'] = bits
+                report['xmm0'] = struct.unpack('<f', struct.pack('<I', bits))[0]
+            say("done: eax = %d (0x%08X), edx = 0x%08X%s%s" % (
                 report['eax'], report['eax'], report['edx'],
-                '' if report['float'] is None else ", float %r" % report['float']))
+                '' if report['float'] is None else ", float %r" % report['float'],
+                ", xmm0 %r" % report['xmm0'] if extra else ''))
         else:
             say("done: eax = %d (0x%08X)" % (report['eax'], report['eax']))
         report['success'] = True
@@ -577,6 +610,9 @@ def call(client, target, arguments=(), *, registers=None, fallback=False, report
                     restored += 1
                 write(request, bytes(STORAGE_SIZE))
                 report['cleanup'] = {'blocks_restored': restored, 'request_zero': read(request, STORAGE_SIZE) == bytes(STORAGE_SIZE)}
+                if mailbox_owned:
+                    write(mailbox, bytes(full_gate.MAILBOX_SIZE))
+                    report['cleanup']['mailbox_zero'] = read(mailbox, full_gate.MAILBOX_SIZE) == bytes(full_gate.MAILBOX_SIZE)
                 say("put back %d gate blocks, request %s" % (
                     restored, 'cleared' if report['cleanup']['request_zero'] else "not cleared"))
                 if foreign:
