@@ -94,6 +94,14 @@ def gaps(read, info, exclude=(), want=40):
     return sorted(out, key=lambda g: g["address"])[-want:]
 
 
+def hook_blocks(title_id):
+    from .game_hook import profile_for
+    h = profile_for(title_id)
+    if not h:
+        return []
+    return [(b["address"], b["address"] + len(bytes.fromhex(b["original"]))) for b in h["hook"]["blocks"]]
+
+
 def build(mailbox, blocks):
     from .game_hook import layout
     pieces = layout(units(mailbox), blocks)
@@ -105,7 +113,7 @@ def install(read, write, info, key, mailbox, exclude=()):
     pieces = _INSTALLED.get(cache)
     if pieces and all(read(a, len(raw)) == raw for a, raw in pieces):
         return pieces[0][0], pieces
-    candidates = gaps(read, info, exclude=exclude)
+    candidates = gaps(read, info, exclude=list(exclude) + hook_blocks(info["title_id"]))
     try:
         pieces = build(mailbox, candidates)
     except RuntimeError:
