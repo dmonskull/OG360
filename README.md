@@ -17,6 +17,26 @@ the memory tools work on any og xbox game. these ones also come with ready made 
 
 more features are planned for the future.
 
+## what you need
+
+a jtag/rgh xbox 360 with xbdm, and jrpc2 added as a plugin in dashlaunch. without jrpc2 the memory stuff and mods still work, but OG360 cant keep the xbox online in games like halo 2 and screenshots only work in some games.
+
+## quick guide
+
+**search** finds a value like health or ammo.
+1. leave the type on any number if you dont know it. type the number you see in game and hit first scan
+2. change it in game, type the new number and hit next scan. if you cant see the number use went up or went down instead
+3. keep going till theres only a few left. double click one to see it in memory or hit add to mods
+
+**changes** is for when you dont know the value at all.
+1. pick an area and take a first snapshot
+2. while nothing is happening hit ignore whats changing now. that hides timers and animations
+3. do the thing in game and hit changed since first snapshot. everything that changed shows up with before and after
+
+**memory** is the hex view. type an address and hit go, click a byte to see it as every type and write a new value on the right.
+
+**mods** has the ready made stuff for your game. tick a switch to turn it on. values update live and lock keeps one stuck where you set it.
+
 if you want to know how it works or do it yourself check out [HOW-IT-WORKS.md](HOW-IT-WORKS.md).
 
 ## credits
