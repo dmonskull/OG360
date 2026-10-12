@@ -1,3 +1,4 @@
+import collections
 import re
 import struct
 
@@ -5,12 +6,32 @@ from ..xbdm import Unreadable, XbdmError
 
 INTERCEPT = 109
 TITLE = 1
+SYSTEM = 2
+TAKEN = 0x2735
 EXECUTABLE_MODULE = 403
 CODE_PAGES = 1
 ROUTINE = (0x2C030000 | TITLE,
            0x4082000C,
            0x38600000,
            0x4E800020)
+RETURN_0 = bytes.fromhex("386000004E800020")
+WRAPPER = ((0x3D600000, 0xFFFF0000),
+           (0x7CE83B78, 0xFFFFFFFF),
+           (0x816B0000, 0xFFFF0000),
+           (0x2B0B0000, 0xFFFFFFFF),
+           (0x409A000C, 0xFFFFFFFF),
+           (0x38600000, 0xFFFF0000),
+           (0x4E800020, 0xFFFFFFFF),
+           (0x7CC73378, 0xFFFFFFFF),
+           (0x7CA62B78, 0xFFFFFFFF),
+           (0x7C852378, 0xFFFFFFFF),
+           (0x7C641B78, 0xFFFFFFFF),
+           (0x7D635B78, 0xFFFFFFFF),
+           (0x48000000, 0xFC000003))
+HOLD_STORES = (0x93BF0108,
+               0x939F00FC,
+               0x93DF0100,
+               0x937F0104)
 
 
 def _u32(client, address):
@@ -154,3 +175,64 @@ def install(client, state):
 
 def release(client, state):
     client.write(state.slot, struct.pack(">I", state.real - state.base))
+
+
+class Card:
+    def __init__(self, kind, real=None, state=None, stub=None, owner=0, module=""):
+        self.kind, self.real, self.state, self.stub = kind, real, state, stub
+        self.owner, self.module = owner, module
+
+
+def _net_state(client, real):
+    words = struct.unpack(">%dI" % len(WRAPPER), client.read(real, len(WRAPPER) * 4))
+    if any(word & mask != want for word, (want, mask) in zip(words, WRAPPER)):
+        raise LookupError("xam export #109 isnt the one OG360 knows")
+    low = words[2] & 0xFFFF
+    state_global = (((words[0] & 0xFFFF) << 16) + (low - 0x10000 if low & 0x8000 else low)) & 0xFFFFFFFF
+    offset = words[-1] & 0x03FFFFFC
+    worker = real + (len(WRAPPER) - 1) * 4 + (offset - 0x04000000 if offset & 0x02000000 else offset)
+    body = struct.unpack(">64I", client.read(worker, 0x100))
+    if not all(store in body for store in HOLD_STORES):
+        raise LookupError("xam export #109 isnt the one OG360 knows")
+    return _u32(client, state_global)
+
+
+def _return_0(client, xam):
+    slots = struct.unpack(">%dI" % xam.count, client.read(xam.slot(xam.first), xam.count * 4))
+    for target, _ in collections.Counter(xam.base + s for s in slots if s).most_common(8):
+        if client.read(target, len(RETURN_0)) == RETURN_0:
+            return target
+    raise LookupError("cant find a li r3,0 in xam")
+
+
+def card(client):
+    mods = modules(client)
+    xam_base, xam_size = _module(mods, "xam.xex")
+    kernel = _kernel_exports(client, _module(mods, "xboxkrnl.exe")[0])
+    xam = Exports(client, _u32(client, _loader_entry(client, kernel, xam_base) + 0x58))
+    if xam.base != xam_base or xam.count < INTERCEPT:
+        raise LookupError("xams export table looks wrong")
+    target = xam.target(client, INTERCEPT)
+    if not xam_base <= target < xam_base + xam_size:
+        module = next((name for name, base, size in mods if base <= target < base + size), "")
+        return Card("elsewhere", module=module)
+    real = _routine_target(client.read(target, 20), target) or target
+    state = _net_state(client, real)
+    if not state:
+        raise LookupError("xams network isnt up yet")
+    send, receive, _, owner = struct.unpack(">4I", client.read(state + 0xFC, 16))
+    stub = _return_0(client, xam)
+    if owner == SYSTEM and receive == stub and not send:
+        return Card("ours", real, state, stub, owner)
+    return Card("taken" if owner else "free", real, state, stub, owner)
+
+
+def claim(client, card):
+    answer = client.call_int32(card.real, [SYSTEM, 0, card.stub, 0, 0]) & 0xFFFFFFFF
+    if answer == TAKEN:
+        raise RuntimeError("something else took the network card first")
+    if answer:
+        raise RuntimeError("xam answered 0x%X" % answer)
+    send, receive, _, owner = struct.unpack(">4I", client.read(card.state + 0xFC, 16))
+    if (owner, receive, send) != (SYSTEM, card.stub, 0):
+        raise RuntimeError("the hold on the network card didnt stick")

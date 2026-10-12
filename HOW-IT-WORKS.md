@@ -8,14 +8,24 @@ watch the byte order. the xbox 360 is big endian but everything on the og xbox s
 
 ## keeping the console online
 
-when an og game turns on its network card (halo 2 does about 8 seconds in) xefu calls xam export 109, `NetDll_XnpEthernetInterceptSetCallbacks`, with filters that take over the xbox 360s network. xbdm goes dead until you quit the game. aurora gets around it with its nova plugin, which answers that call itself. OG360 does the same thing from the pc so it works from any dash.
+when an og game turns on its network card (halo 2 does about 8 seconds in) xefu calls xam export 109, `NetDll_XnpEthernetInterceptSetCallbacks`, with filters that take over the xbox 360s network. xbdm goes dead until you quit the game. aurora gets around it with its nova plugin, which answers that call itself. OG360 gets the same result from the pc so it works from any dash.
+
+xam only lets one caller hold the card at a time. if someone already has it the next caller just gets 0x2735 back, and xefu never checks what it got back. so OG360 grabs the card first, with a filter that lets everything through:
 
 1. find xams export table, just by reading memory:
    - search the first 8 KB of `xboxkrnl.exe` for `XEX2`. thats the kernels xex header. header +0x10 is the security info and security info +0x160 is the export table.
    - kernel export 403 (`XexExecutableModuleHandle`) holds a pointer to the running titles loader entry. follow the links at +0 until you hit the entry with image base (+0x1C) = xams base from the xbdm module list.
    - xams entry +0x58 is its xex header. +0x10 and +0x160 again gets you its export table.
    - in an export table +0x20 has the image base >> 16 in its low 16 bits, +0x24 is the count, +0x28 the first ordinal and the slots start at +0x2C. a slot holds the function address minus the image base.
-2. write this 0x20 bytes before the next 64 KB boundary after the end of xams export table (0x81A7FFE0 on mine). check its all zeros and still inside xams code first.
+2. read export 109. its `lis r11` and `lwz r11` load a pointer to xams network state (from 0x81AC7C04 on mine) and its last instruction is a `b` to the function that does the work. that function keeps whoever holds the card at state +0x108 (0 = nobody), the send filter at +0xFC, the receive filter at +0x100 and the context at +0x104.
+3. find a `li r3, 0` followed by `blr` in xam. the one most of xams export table points at works (0x81964638 on mine, 31 exports use it).
+4. call export 109 with jrpc2 on a system thread with (2, 0, that address, 0, 0). 2 means a system caller. when a game quits xam drops whoever holds the card unless its a system caller, so it stays held. the filter says 0 to every frame so everything goes through like normal, and theres no send filter.
+
+thats one call into xam and nothing gets written to its code, so its fine with a game running or after one. it only lives in ram so a reboot or the auto power off clears it. OG360 does it again when it connects or the game changes. games started after it dont get network, same as on aurora. calling 109 with (2, 0, 0, 0, 0) gives the card back.
+
+without jrpc2 OG360 does it the old way:
+
+1. write this 0x20 bytes before the next 64 KB boundary after the end of xams export table (0x81A7FFE0 on mine). check its all zeros and still inside xams code first.
    ```
    2C030001   cmpwi r3, 1
    4082000C   bne   +12
@@ -23,9 +33,9 @@ when an og game turns on its network card (halo 2 does about 8 seconds in) xefu 
    4E800020   blr
    48xxxxxx   b     <real export 109>
    ```
-3. point slot 109 at it. a game (r3 = 1) gets told its done and never takes the network card. anything else goes on to the real function.
+2. point slot 109 at it. a game (r3 = 1) gets told its done and never takes the network card. anything else goes on to the real function.
 
-it has to be in place before the game starts since games grab their imports when they load. it only lives in ram so a reboot or the auto power off clears it. OG360 puts it back every time it connects. the game itself wont have network after this, same as on aurora.
+that has to be in place before the game starts since games grab their imports when they load. writing into xams code freezes the xbox once xefu has run since it booted, even if you write back the same bytes. so OG360 only does it while no og game is running, and its only really safe right after a reboot.
 
 ## finding the games memory
 

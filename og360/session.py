@@ -263,20 +263,42 @@ class Session:
                 self.log.info(self.problem, key="title")
             self._keep_network()
 
+    def _in_xefu(self):
+        return self.kind == "og" or "\\compatibility\\" in (self.title_path or "").lower()
+
     def _keep_network(self):
         try:
-            state = self.console.run(network.look)
-            if state.kind == "open":
+            try:
+                card = self.console.run(network.card)
+            except LookupError:
+                card = None
+            if card is None or (card.kind == "free" and not self.console.run(lambda c: c.has_jrpc())):
+                self._install_network_fix()
+            elif card.kind == "elsewhere":
+                self.log.info("%s answers games that take the network card (xam export #109) so the xbox stays online" % (card.module or "Another module"), key="network")
+            elif card.kind == "taken":
+                self.log.info("something else has the network card right now so OG360 left it alone", key="network")
+            elif card.kind == "free":
                 with self.log.action("keep the xbox on the network in og games") as act:
-                    self.console.run(lambda c: network.install(c, state))
-                    act.done("games now get their answer from 0x%08X instead of taking the network card (till the xbox "
-                             "restarts)" % state.spot)
-            elif state.kind == "elsewhere":
-                self.log.info("%s answers games that take the network card (xam export #109) so the xbox stays online" % (state.owner or "Another module"), key="network")
+                    self.console.run(lambda c: network.claim(c, card))
+                    act.done("the xbox holds its own network card now so og games cant take it (till the xbox restarts)")
         except Exception as e:
             if self.console and self.console.alive:
                 self.log.warn("couldnt make sure og games leave the xbox on the network: %s"
                               % describe(e), key="network")
+
+    def _install_network_fix(self):
+        state = self.console.run(network.look)
+        if state.kind == "open" and self._in_xefu():
+            self.log.info("left the network fix alone, an og game is already running and adding it now freezes "
+                          "the xbox. open OG360 before you start a game to keep the xbox online", key="network")
+        elif state.kind == "open":
+            with self.log.action("keep the xbox on the network in og games") as act:
+                self.console.run(lambda c: network.install(c, state))
+                act.done("games now get their answer from 0x%08X instead of taking the network card (till the xbox "
+                         "restarts)" % state.spot)
+        elif state.kind == "elsewhere":
+            self.log.info("%s answers games that take the network card (xam export #109) so the xbox stays online" % (state.owner or "Another module"), key="network")
 
     @property
     def running(self):
