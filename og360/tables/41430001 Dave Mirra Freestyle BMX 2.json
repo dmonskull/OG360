@@ -1,0 +1,720 @@
+{
+ "title_id": "41430001",
+ "title": "Dave Mirra Freestyle BMX 2",
+ "switches": [
+  {
+   "name": "Debug info",
+   "writes": [
+    {
+     "address": "262C58",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Unlock hidden riders",
+   "writes": [
+    {
+     "address": "322694",
+     "type": "u8",
+     "on": "&~0x01",
+     "off": ""
+    },
+    {
+     "address": "322AEC",
+     "type": "u8",
+     "on": "&~0x01",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Unlock all bikes",
+   "writes": [
+    {
+     "address": "31E5D0",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "31EA28",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "31EE80",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "31F2D8",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "31F730",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "31FB88",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "31FFE0",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "320438",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "320890",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "320CE8",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "321140",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "321598",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "3219F0",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "321E48",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "3222A0",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "3226F8",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "322B50",
+     "type": "u8",
+     "on": "5",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Unlock all levels (your rider)",
+   "writes": [
+    {
+     "address": "31E6EA + [1CAE18] * 458 + 0",
+     "type": "u8",
+     "on": "|0x01",
+     "off": ""
+    },
+    {
+     "address": "31E6EA + [1CAE18] * 458 + 44",
+     "type": "u8",
+     "on": "|0x01",
+     "off": ""
+    },
+    {
+     "address": "31E6EA + [1CAE18] * 458 + 88",
+     "type": "u8",
+     "on": "|0x01",
+     "off": ""
+    },
+    {
+     "address": "31E6EA + [1CAE18] * 458 + CC",
+     "type": "u8",
+     "on": "|0x01",
+     "off": ""
+    },
+    {
+     "address": "31E6EA + [1CAE18] * 458 + 110",
+     "type": "u8",
+     "on": "|0x01",
+     "off": ""
+    },
+    {
+     "address": "31E6EA + [1CAE18] * 458 + 154",
+     "type": "u8",
+     "on": "|0x01",
+     "off": ""
+    },
+    {
+     "address": "31E6EA + [1CAE18] * 458 + 198",
+     "type": "u8",
+     "on": "|0x01",
+     "off": ""
+    },
+    {
+     "address": "31E6EA + [1CAE18] * 458 + 1DC",
+     "type": "u8",
+     "on": "|0x01",
+     "off": ""
+    },
+    {
+     "address": "31E6EA + [1CAE18] * 458 + 220",
+     "type": "u8",
+     "on": "|0x01",
+     "off": ""
+    },
+    {
+     "address": "31E6EA + [1CAE18] * 458 + 264",
+     "type": "u8",
+     "on": "|0x01",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Unlock all movies",
+   "writes": [
+    {
+     "address": "31E56C",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "31E9C4",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "31EE1C",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "31F274",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "31F6CC",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "31FB24",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "31FF7C",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "3203D4",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "32082C",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "320C84",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "3210DC",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "321534",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "32198C",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "321DE4",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "32223C",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "322694",
+     "type": "u8",
+     "on": "|0x02",
+     "off": ""
+    },
+    {
+     "address": "31E560",
+     "type": "u8",
+     "on": "|0x08",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Unlock all sponsors",
+   "writes": [
+    {
+     "address": "31E5D4",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "31EA2C",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "31EE84",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "31F2DC",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "31F734",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "31FB8C",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "31FFE4",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "32043C",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "320894",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "320CEC",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "321144",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "32159C",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "3219F4",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "321E4C",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "3222A4",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "3226FC",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    },
+    {
+     "address": "322B54",
+     "type": "bytes",
+     "on": "010000000100000001000000010000000100000001000000010000000100000001000000",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Unlock competition outfits",
+   "writes": [
+    {
+     "address": "31E5D1",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "31EA29",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "31EE81",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "31F2D9",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "31F731",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "31FB89",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "31FFE1",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "320439",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "320891",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "320CE9",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "321141",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "321599",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "3219F1",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "321E49",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "3222A1",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "3226F9",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    },
+    {
+     "address": "322B51",
+     "type": "u8",
+     "on": "2",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Unlock all secret tricks",
+   "writes": [
+    {
+     "address": "31E99A",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "31EDF2",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "31F24A",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "31F6A2",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "31FAFA",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "31FF52",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "3203AA",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "320802",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "320C5A",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "3210B2",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "32150A",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "321962",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "321DBA",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "322212",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "32266A",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "322AC2",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    },
+    {
+     "address": "322F1A",
+     "type": "bytes",
+     "on": "0000000000000000000000000000000000000000",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Unlock park editor stuff",
+   "writes": [
+    {
+     "address": "31E565",
+     "type": "u8",
+     "on": "10",
+     "off": ""
+    },
+    {
+     "address": "31E564",
+     "type": "u8",
+     "on": "14",
+     "off": ""
+    }
+   ]
+  }
+ ],
+ "entries": [
+  {
+   "name": "Park editor themes unlocked",
+   "address": "31E565",
+   "type": "u8",
+   "value": ""
+  },
+  {
+   "name": "Park editor object level",
+   "address": "31E564",
+   "type": "u8",
+   "value": ""
+  },
+  {
+   "name": "P1 rider index",
+   "address": "1CAE18",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "P2 rider index",
+   "address": "1CAE1C",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Dave Mirra respect",
+   "address": "31E624",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Dave Mirra bikes unlocked",
+   "address": "31E5D0",
+   "type": "u8",
+   "value": ""
+  },
+  {
+   "name": "Hidden rider 15 lock",
+   "address": "322694",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Hidden rider 16 lock",
+   "address": "322AEC",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Cheat input buffer",
+   "address": "1CAE48",
+   "type": "text",
+   "value": ""
+  },
+  {
+   "name": "Debug info flag",
+   "address": "262C58",
+   "type": "u8",
+   "value": ""
+  }
+ ],
+ "patches": [],
+ "calls": [],
+ "symbols": {
+  "riders": "31E56C",
+  "p1_rider": "1CAE18",
+  "debug_info": "262C58"
+ }
+}

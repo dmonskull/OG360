@@ -39,7 +39,7 @@ class ToolsTab(ScrollFrame):
         box = ttk.LabelFrame(left, text="Console", padding=10)
         box.pack(fill="x")
         self.info = self._grid(box, (("console", "Console"), ("game", "Running"), ("title_id", "Title ID"),
-                                     ("emulator", "Emulator"), ("ram", "Game RAM on the 360"), ("image", "XBE image")))
+                                     ("emulator", "Emulator"), ("ram", "Game RAM on the Xbox 360"), ("image", "XBE image")))
         self.pause_reads = tk.BooleanVar(value=app.s.pause_big_reads)
         ttk.Checkbutton(box, text="Pause the game for big reads (10x faster)",
                         variable=self.pause_reads, command=self._pause_reads_changed).pack(anchor="w", pady=(8, 0))
@@ -66,10 +66,10 @@ class ToolsTab(ScrollFrame):
         e.pack(side="left")
         e.bind("<Return>", lambda ev: self.convert())
         ttk.Button(row, text="Convert", command=self.convert).pack(side="left", padx=6)
-        self.conv_out = self._grid(box, (("addr", "Game address"), ("host", "360 address"),
+        self.conv_out = self._grid(box, (("addr", "Game address"), ("host", "Xbox 360 address"),
                                          ("phys", "Xbox physical"), ("section", "Section")))
         ttk.Label(box, foreground=pal["dim"], wraplength=380, justify="left", text=(
-            "the 360 address works in other xbdm tools. it can move when the game allocates memory so "
+            "the xbox 360 address works in other xbdm tools. it can move when the game allocates memory so "
             "convert again after a level loads")).pack(anchor="w", pady=(6, 0))
 
         box = ttk.LabelFrame(left, text="Save memory to a file", padding=10)

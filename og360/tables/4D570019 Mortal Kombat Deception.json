@@ -1,0 +1,199 @@
+{
+ "title_id": "4D570019",
+ "title": "Mortal Kombat: Deception",
+ "switches": [
+  {
+   "name": "Infinite health (player 1)",
+   "writes": [
+    {
+     "address": "620FD0",
+     "type": "float",
+     "on": "1.0",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Infinite health (player 2)",
+   "writes": [
+    {
+     "address": "62103C",
+     "type": "float",
+     "on": "1.0",
+     "off": "restore"
+    }
+   ],
+   "group": "p2 health"
+  },
+  {
+   "name": "One hit kills on player 2",
+   "writes": [
+    {
+     "address": "62103C",
+     "type": "float",
+     "on": "0.01",
+     "off": "restore"
+    }
+   ],
+   "group": "p2 health"
+  },
+  {
+   "name": "Freeze the round timer",
+   "writes": [
+    {
+     "address": "46BE44",
+     "type": "i32",
+     "on": "60",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Max koins (player 1)",
+   "writes": [
+    {
+     "address": "5FDFA0",
+     "type": "i32",
+     "on": "99999",
+     "off": "restore"
+    },
+    {
+     "address": "5FDFA4",
+     "type": "i32",
+     "on": "99999",
+     "off": "restore"
+    },
+    {
+     "address": "5FDFA8",
+     "type": "i32",
+     "on": "99999",
+     "off": "restore"
+    },
+    {
+     "address": "5FDFAC",
+     "type": "i32",
+     "on": "99999",
+     "off": "restore"
+    },
+    {
+     "address": "5FDFB0",
+     "type": "i32",
+     "on": "99999",
+     "off": "restore"
+    },
+    {
+     "address": "5FDFB4",
+     "type": "i32",
+     "on": "99999",
+     "off": "restore"
+    }
+   ]
+  }
+ ],
+ "entries": [
+  {
+   "name": "P1 health",
+   "address": "620FD0",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "P1 start health",
+   "address": "620FD4",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "P2 health",
+   "address": "62103C",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "P2 start health",
+   "address": "621040",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "P1 rounds won",
+   "address": "621004",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "P2 rounds won",
+   "address": "621070",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "Round timer",
+   "address": "62115C",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "Round timer tick",
+   "address": "46BE44",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "P1 platinum koins",
+   "address": "5FDFA0",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "P1 onyx koins",
+   "address": "5FDFA4",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "P1 sapphire koins",
+   "address": "5FDFA8",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "P1 jade koins",
+   "address": "5FDFAC",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "P1 ruby koins",
+   "address": "5FDFB0",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "P1 gold koins",
+   "address": "5FDFB4",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "P2 gold koins",
+   "address": "5FD9D4",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "Game mode",
+   "address": "61C414",
+   "type": "i32",
+   "value": ""
+  }
+ ],
+ "patches": [],
+ "calls": [],
+ "symbols": {
+  "p1_block": "620FC4",
+  "p2_block": "621030",
+  "p1_profile": "5FDF60",
+  "p2_profile": "5FD980"
+ }
+}

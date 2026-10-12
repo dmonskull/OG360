@@ -258,7 +258,7 @@ class Session:
         if key != self._title_key:
             self._title_key = key
             if self.kind == "x360":
-                self.log.info("360 game running: %s" % self.title_path, key="title")
+                self.log.info("xbox 360 game running: %s" % self.title_path, key="title")
             else:
                 self.log.info(self.problem, key="title")
             self._keep_network()

@@ -1,14 +1,14 @@
 # how it works
 
-heres how OG360 edits memory and calls game functions in og xbox games running under xefu, on all 8 xefu versions. theres enough here to do it yourself without OG360.
+heres how OG360 edits memory and calls game functions in og xbox games running on the xbox 360 under xefu, on all 8 xefu versions. theres enough here to do it yourself without OG360.
 
-you need a jtag/rgh 360 with xbdm loaded. OG360 talks to it through [py-xbdm](https://github.com/XeCrippy/py-xbdm) by [XeCrippy](https://github.com/XeCrippy).
+you need a jtag/rgh xbox 360 with xbdm loaded. OG360 talks to it through [py-xbdm](https://github.com/XeCrippy/py-xbdm) by [XeCrippy](https://github.com/XeCrippy).
 
-watch the byte order. the 360 is big endian but everything on the og xbox side is little endian.
+watch the byte order. the xbox 360 is big endian but everything on the og xbox side is little endian.
 
 ## keeping the console online
 
-when an og game turns on its network card (halo 2 does about 8 seconds in) xefu calls xam export 109, `NetDll_XnpEthernetInterceptSetCallbacks`, with filters that take over the 360s network. xbdm goes dead until you quit the game. aurora gets around it with its nova plugin, which answers that call itself. OG360 does the same thing from the pc so it works from any dash.
+when an og game turns on its network card (halo 2 does about 8 seconds in) xefu calls xam export 109, `NetDll_XnpEthernetInterceptSetCallbacks`, with filters that take over the xbox 360s network. xbdm goes dead until you quit the game. aurora gets around it with its nova plugin, which answers that call itself. OG360 does the same thing from the pc so it works from any dash.
 
 1. find xams export table, just by reading memory:
    - search the first 8 KB of `xboxkrnl.exe` for `XEX2`. thats the kernels xex header. header +0x10 is the security info and security info +0x160 is the export table.
@@ -29,18 +29,18 @@ it has to be in place before the game starts since games grab their imports when
 
 ## finding the games memory
 
-xefu gives the og xbox its 64 MB of ram as one block of 360 memory and boots a real x86 xbox kernel in it. so a game address goes through normal x86 page tables that live inside that block.
+xefu gives the og xbox its 64 MB of ram as one block of xbox 360 memory and boots a real x86 xbox kernel in it. so a game address goes through normal x86 page tables that live inside that block.
 
 1. read the emulators pe header at 0x82000000. its timestamp (pe +0x8) and entry point (pe +0x28) tell you which xefu it is. see the table at the bottom.
 2. read 8 bytes at that xefus ram pointer. its the start and end of the games ram as two big endian u32s, 0x4000000 apart.
 3. check you got it right. ram +0x10000 starts with `MZ` (the xbox kernel) and the u32 at ram +0xF000 +0x300*4 points back at 0xF000 (the page directory maps itself).
-4. turn a game address into a 360 address:
+4. turn a game address into an xbox 360 address:
    ```
    pde = u32 at ram + 0xF000 + (addr >> 22) * 4
    if pde & 0x80:   phys = (pde & 0xFFC00000) | (addr & 0x3FFFFF)          4 MB page
    else:            pte  = u32 at ram + (pde & 0xFFFFF000) + ((addr >> 12) & 0x3FF) * 4
                     phys = (pte & 0xFFFFF000) | (addr & 0xFFF)
-   360 address = ram + phys
+   xbox 360 address = ram + phys
    ```
    bit 0 of the pde and pte has to be set or the page isnt mapped. do it for every 4 KB page, pages that are next to each other in the game arent always next to each other in ram.
 5. read and write with xbdm `getmem` and `setmem`. `getmemex` sends binary back and is about 10x faster for big reads.

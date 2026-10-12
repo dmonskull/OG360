@@ -74,7 +74,7 @@ class MemoryTab(ttk.Frame):
         self.where = {}
         self.vals = {}
         row = 1
-        for key, label in (("addr", "Game address"), ("host", "360 address"), ("section", "Section")):
+        for key, label in (("addr", "Game address"), ("host", "Xbox 360 address"), ("section", "Section")):
             ttk.Label(side, text=label, foreground=pal["dim"]).grid(row=row, column=0, sticky="w", pady=1)
             self.where[key] = ttk.Label(side, text="", font=MONO)
             self.where[key].grid(row=row, column=1, sticky="w", padx=(12, 0))

@@ -34,7 +34,7 @@ HINTS = (
     ("current thread isnt running", "the games thread was switching every time, try again"),
     ("no free space in the xbe header", "use the scratch field (advanced)"),
     ("isnt in the code ranges", "that address isnt in this games xbe. use an address from this game"),
-    ("unknown emulator build", "OG360 doesnt know this emulator build (it knows the 8 xefu builds from the 360s compat pack)"),
+    ("unknown emulator build", "OG360 doesnt know this emulator build (it knows the 8 xefu builds from the xbox 360s compat pack)"),
     ("calls dont work on", "this emulator build cant do calls yet. memory editing still works"),
     ("only cdecl calls work", "this build only does cdecl calls with no register args"),
     ("no safe spot", "the games main thread never stopped at a safe spot. halo 2 only gets there in unpaused "
