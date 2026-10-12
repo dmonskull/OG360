@@ -1,0 +1,65 @@
+{
+  "title_id": "4D57000E",
+  "title": "Gauntlet Dark Legacy",
+  "entries": [
+    {
+      "name": "Player 1 health",
+      "address": "player_health",
+      "type": "float",
+      "value": "779"
+    },
+    {
+      "name": "Player 2 health",
+      "address": "player_health + 1*player_size",
+      "type": "float",
+      "value": ""
+    },
+    {
+      "name": "Player 3 health",
+      "address": "player_health + 2*player_size",
+      "type": "float",
+      "value": ""
+    },
+    {
+      "name": "Player 4 health",
+      "address": "player_health + 3*player_size",
+      "type": "float",
+      "value": ""
+    },
+    {
+      "name": "Player 1 name",
+      "address": "player_health + 18",
+      "type": "text",
+      "value": "DMOn"
+    },
+    {
+      "name": "Red Crystals 100",
+      "address": "00BB5EB6",
+      "type": "u16",
+      "value": "100"
+    },
+    {
+      "name": "PLAYER 1 NAME",
+      "address": "00BB5B44",
+      "type": "text",
+      "value": "MODDED..."
+    }
+  ],
+  "patches": [],
+  "calls": [
+    {
+      "name": "Test call (returns 28)",
+      "address": "0x000679E0",
+      "args": [
+        "50000"
+      ],
+      "string": "",
+      "expect": "28"
+    }
+  ],
+  "symbols": {
+    "player_health": "BB85B8",
+    "player_size": "6140"
+  },
+  "switches": []
+}

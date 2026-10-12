@@ -1,0 +1,1229 @@
+{
+ "title_id": "54540009",
+ "title": "Mafia",
+ "symbols": {
+  "game": "[31FC5C]",
+  "scene": "[game + 20]",
+  "player": "[scene + 150]",
+  "car": "[player + 234]",
+  "vehicle": "car + 90",
+  "weapon": "[player + 5DC] + [player + 5E8] * 10",
+  "weapon_defs": "[3CCDF8]",
+  "camera": "[[game + 10] + 13C]",
+  "freeride_cars": "3CCB78",
+  "police_car_speed": "3CD3D0",
+  "hud": "3B7B40",
+  "crimes": "scene + 3E40",
+  "freeride_driven": "3CCB74",
+  "people_gravity": "2F4C20",
+  "profile": "3CCAC8"
+ },
+ "switches": [
+  {
+   "name": "God mode",
+   "writes": [
+    {
+     "address": "player + 678",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "player + 6B8",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "player + 67C",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "player + 6BC",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "player + 680",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "player + 6C0",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "player + 684",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "player + 6C4",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "player + 688",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "player + 6C8",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Infinite ammo",
+   "writes": [
+    {
+     "address": "weapon + 8",
+     "type": "i32",
+     "on": ">=999",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "No reload",
+   "writes": [
+    {
+     "address": "weapon + 4",
+     "type": "i32",
+     "on": "=[weapon_defs + ([weapon] & FFFF) * F0 + 60]",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "One hit kills",
+   "writes": [
+    {
+     "address": "weapon_defs + 258",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + 618",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + 708",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + 7F8",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + 8E8",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + 9D8",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + AC8",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + BB8",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + CA8",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + D98",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + 1F68",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    },
+    {
+     "address": "weapon_defs + 2058",
+     "type": "float",
+     "on": "10000",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Super speed",
+   "writes": [
+    {
+     "address": "player + 6D0",
+     "type": "float",
+     "on": "2",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Unbreakable car",
+   "writes": [
+    {
+     "address": "car + 23EC",
+     "type": "u32",
+     "on": "0xC000",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Infinite fuel",
+   "writes": [
+    {
+     "address": "vehicle + 740",
+     "type": "float",
+     "on": "0",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Unlock all Free Ride cars",
+   "writes": [
+    {
+     "address": "freeride_driven",
+     "type": "u32",
+     "on": "|0xFFFFFFFF",
+     "off": ""
+    },
+    {
+     "address": "freeride_cars",
+     "type": "u32",
+     "on": "|0xFFFFFFFF",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Low gravity",
+   "writes": [
+    {
+     "address": "people_gravity",
+     "type": "double",
+     "on": "1.62",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "No police",
+   "writes": [
+    {
+     "address": "crimes + 38",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Freeze mission timer",
+   "writes": [
+    {
+     "address": "hud + 416C",
+     "type": "u32",
+     "on": "hold",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Free camera",
+   "driver": "mafia.free_camera",
+   "writes": []
+  },
+  {
+   "name": "Play as anyone",
+   "driver": "mafia.play_as",
+   "pick": {
+    "from": "driver"
+   },
+   "writes": []
+  },
+  {
+   "name": "Mission select",
+   "driver": "mafia.mission_select",
+   "pick": {
+    "from": "driver"
+   },
+   "writes": []
+  },
+  {
+   "name": "No autosaves",
+   "writes": [
+    {
+     "address": "profile + B8",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    }
+   ]
+  }
+ ],
+ "entries": [
+  {
+   "name": "Health",
+   "address": "player + 6B8",
+   "type": "float",
+   "value": "200"
+  },
+  {
+   "name": "Max health",
+   "address": "player + 678",
+   "type": "float",
+   "value": "200"
+  },
+  {
+   "name": "Run speed",
+   "address": "player + 6D0",
+   "type": "float",
+   "value": "1"
+  },
+  {
+   "name": "Strength",
+   "address": "player + 6B4",
+   "type": "float",
+   "value": "0.7"
+  },
+  {
+   "name": "Shooting skill",
+   "address": "player + 6DC",
+   "type": "float",
+   "value": "0.7"
+  },
+  {
+   "name": "Driving skill",
+   "address": "player + 6E8",
+   "type": "float",
+   "value": "0.8"
+  },
+  {
+   "name": "Ammo in gun",
+   "address": "weapon + 4",
+   "type": "i32",
+   "value": "50"
+  },
+  {
+   "name": "Spare ammo",
+   "address": "weapon + 8",
+   "type": "i32",
+   "value": "999"
+  },
+  {
+   "name": "Fuel",
+   "address": "vehicle + F14",
+   "type": "float",
+   "value": "60"
+  },
+  {
+   "name": "Fuel tank size",
+   "address": "vehicle + 21CC",
+   "type": "float",
+   "value": "60"
+  },
+  {
+   "name": "FOV (radians)",
+   "address": "camera + 120",
+   "type": "float",
+   "value": "1.2217"
+  },
+  {
+   "name": "Police car speed",
+   "address": "police_car_speed",
+   "type": "float",
+   "value": "1"
+  },
+  {
+   "name": "Free Ride car mask",
+   "address": "freeride_cars",
+   "type": "u32",
+   "value": "0xFFFFFFFF"
+  },
+  {
+   "name": "Mission timer (ms)",
+   "address": "hud + 416C",
+   "type": "u32",
+   "value": "600000"
+  },
+  {
+   "name": "Car speed (m/s)",
+   "address": "car + 910",
+   "type": "float",
+   "value": "40"
+  },
+  {
+   "name": "Gravity (m/s2)",
+   "address": "people_gravity",
+   "type": "double",
+   "value": "9.81"
+  }
+ ],
+ "patches": [],
+ "calls": [
+  {
+   "name": "Repair my car",
+   "address": "0x0002EB10",
+   "convention": "thiscall",
+   "args": [
+    "=car",
+    "1"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Car boost to 150 km/h",
+   "address": "0x00029410",
+   "convention": "thiscall",
+   "args": [
+    "=car",
+    "f:41.6667",
+    "0"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Car boost to 250 km/h",
+   "address": "0x00029410",
+   "convention": "thiscall",
+   "args": [
+    "=car",
+    "f:69.4444",
+    "0"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "FOV 90",
+   "address": "0x0023E1B0",
+   "convention": "stdcall",
+   "args": [
+    "=camera",
+    "f:1.5708"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "FOV 110",
+   "address": "0x0023E1B0",
+   "convention": "stdcall",
+   "args": [
+    "=camera",
+    "f:1.9199"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "FOV 70 (normal)",
+   "address": "0x0023E1B0",
+   "convention": "stdcall",
+   "args": [
+    "=camera",
+    "f:1.2217"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Give Thompson 1928",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\n\u00002\u0000\u00c8\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Thompson 1928 (silenced)",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "!\u00002\u0000\u00c8\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Pump shotgun",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\u000b\u0000\b\u0000(\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Pump shotgun (silenced)",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\"\u0000\b\u0000(\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Sawn-off shotgun",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\f\u0000\u0002\u0000\u001e\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give M1903 Springfield rifle",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\r\u0000\u0005\u0000\u001e\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Mosin-Nagant sniper rifle",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\u000e\u0000\u0005\u0000\u001e\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Colt 1911",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\t\u0000\u0007\u0000F\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give S&W model 27 Magnum",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\u0007\u0000\u0006\u0000<\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give S&W model 10 M&P revolver",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\b\u0000\u0006\u0000<\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Colt Detective Special",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\u0006\u0000\u0006\u0000<\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Molotov cocktails",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\u0005\u0000\u0001\u0000\t\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Grenades",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\u000f\u0000\u0001\u0000\t\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Baseball bat",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Knife",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Give Knuckleduster",
+   "address": "0x0014F7B0",
+   "convention": "thiscall",
+   "args": [
+    "=player+5DC",
+    "@wstring",
+    "0"
+   ],
+   "string": "\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+   "expect": "1"
+  },
+  {
+   "name": "Play as Paulie",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Paulie.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Sam",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Sam.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Don Salieri",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Salieri2.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Don Morello",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "MorelloLOW.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Frank",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "frank.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Vincenzo",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "VincenzoLOW.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Ralph",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Ralph.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Luigi",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Luigi.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Lucas Bertone",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Lucas.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Sergio",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Sergio.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Sarah",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Sara.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Henry",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "hen.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Joe",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Joe.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Biff",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Biff.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Tony",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Tony.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Carlo",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Carlo.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Tommy in a hat",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "TommyHAT.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Tommy in a coat and hat",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "TommyCOATHAT.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Tommy the racer",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "TommyRACER.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Tommy the sailor",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "TommySAILOR.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Tommy the taxi driver",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "TommyTAXIDRIVER.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Tommy the worker",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "TommyDELNIK.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Tommy (Free Ride)",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "TommyFREERIDER.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a police officer",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "pol01.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a police officer (2)",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "PoliceMan01.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a detective",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Detektiv01.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a gangster",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Gangster03.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a Free Ride gangster",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "freegang01.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a boxer",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Boxer01.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a sailor",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "sailor01.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a waiter",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "waiter01.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a priest",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Knez.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a homeless man",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Homeless01.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a firefighter",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Hasic01.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a civilian (1)",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "civil18.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a civilian (2)",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "civil36.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as a civilian (3)",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "civil41.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Play as Tommy again",
+   "address": "0x00069940",
+   "convention": "thiscall",
+   "args": [
+    "=player",
+    "@string",
+    "0"
+   ],
+   "string": "Tommy.i3d",
+   "expect": ""
+  },
+  {
+   "name": "Turn my car into a Bigfoot",
+   "address": "0x001DD400",
+   "convention": "stdcall",
+   "args": [
+    "=car",
+    "58"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Turn my car into a Black Dragon Taxi 4WD",
+   "address": "0x001DD400",
+   "convention": "stdcall",
+   "args": [
+    "=car",
+    "59"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Turn my car into a Flamer",
+   "address": "0x001DD400",
+   "convention": "stdcall",
+   "args": [
+    "=car",
+    "61"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Turn my car into a Flame Spear 4WD",
+   "address": "0x001DD400",
+   "convention": "stdcall",
+   "args": [
+    "=car",
+    "73"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Turn my car into a Trautenberg Racer 4WD",
+   "address": "0x001DD400",
+   "convention": "stdcall",
+   "args": [
+    "=car",
+    "38"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Turn my car into a Carrozella C-Otto 4WD",
+   "address": "0x001DD400",
+   "convention": "stdcall",
+   "args": [
+    "=car",
+    "36"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Turn my car into a Manta Prototype",
+   "address": "0x001DD400",
+   "convention": "stdcall",
+   "args": [
+    "=car",
+    "34"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Turn my car into a Lassiter V16 Police",
+   "address": "0x001DD400",
+   "convention": "stdcall",
+   "args": [
+    "=car",
+    "46"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Turn my car into a Bolt Firetruck",
+   "address": "0x001DD400",
+   "convention": "stdcall",
+   "args": [
+    "=car",
+    "41"
+   ],
+   "string": "",
+   "expect": ""
+  },
+  {
+   "name": "Turn my car into car number...",
+   "address": "0x001DD400",
+   "convention": "stdcall",
+   "args": [
+    "=car",
+    "58"
+   ],
+   "string": "",
+   "expect": ""
+  }
+ ]
+}

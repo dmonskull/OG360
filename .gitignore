@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+.setup.lock
+.setup-backups/
+.setup-failed
+setup.log
+config.json
+logs/
+reports/
+dumps/
+screenshots/
+games/
+mods/
+.update/
+.DS_Store

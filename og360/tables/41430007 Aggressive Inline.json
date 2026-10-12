@@ -1,0 +1,1230 @@
+{
+  "title_id": "41430007",
+  "title": "Aggressive Inline",
+  "switches": [
+    {
+      "name": "Infinite juice",
+      "writes": [
+        {
+          "address": "tune_juice + B0",
+          "type": "float",
+          "on": "-1",
+          "off": "restore"
+        },
+        {
+          "address": "tune_juice + 80",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_general + 110",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Perfect balance",
+      "writes": [
+        {
+          "address": "tune_grind + B0",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_grind + 110",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_grind + 2C0",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_grind + 320",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_grind + 3B0",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_grind + 410",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Super spin",
+      "writes": [
+        {
+          "address": "tune_physics + 650",
+          "type": "float",
+          "on": "640",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Low-gravity wall rides",
+      "writes": [
+        {
+          "address": "tune_grind + 830",
+          "type": "float",
+          "on": "3",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Super jump",
+      "writes": [
+        {
+          "address": "tune_physics + 80",
+          "type": "float",
+          "on": "30",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Super speed",
+      "writes": [
+        {
+          "address": "tune_physics + B0",
+          "type": "float",
+          "on": "32",
+          "off": "restore"
+        },
+        {
+          "address": "tune_physics + 50",
+          "type": "float",
+          "on": "45",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Low gravity",
+      "writes": [
+        {
+          "address": "tune_physics + 20",
+          "type": "float",
+          "on": "30",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Unlock all skaters",
+      "writes": [
+        {
+          "address": "unlocks",
+          "type": "u32",
+          "on": "|0x3FFFFF",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Max stats",
+      "writes": [
+        {
+          "address": "1EB209",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EB719",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EBC29",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EC139",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EC649",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1ECB59",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1ED069",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1ED579",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EDA89",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EDF99",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EE4A9",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EE9B9",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EEEC9",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EF3D9",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EF8E9",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EFDF9",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1F0309",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1F0819",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1F0D29",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1F1239",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1F1749",
+          "type": "u8",
+          "on": "10",
+          "off": ""
+        },
+        {
+          "address": "1EB20C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EB71C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EBC2C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EC13C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EC64C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1ECB5C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1ED06C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1ED57C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EDA8C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EDF9C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EE4AC",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EE9BC",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EEECC",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EF3DC",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EF8EC",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1EFDFC",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1F030C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1F081C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1F0D2C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1F123C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        },
+        {
+          "address": "1F174C",
+          "type": "u32",
+          "on": "0xFFFFFFFF",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Unlock all special tricks",
+      "writes": [
+        {
+          "address": "1EB210",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EB720",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EBC30",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EC140",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EC650",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1ECB60",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1ED070",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1ED580",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EDA90",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EDFA0",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EE4B0",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EE9C0",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EEED0",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EF3E0",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EF8F0",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1EFE00",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1F0310",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1F0820",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1F0D30",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1F1240",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        },
+        {
+          "address": "1F1750",
+          "type": "u32",
+          "on": "|0xFE00",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Toggle Debug",
+      "writes": [
+        {
+          "address": "debug_mode",
+          "type": "u8",
+          "on": "&~0x02",
+          "off": ""
+        },
+        {
+          "address": "debug_mode",
+          "type": "u8",
+          "on": "|0x01",
+          "off": "&~0x03"
+        },
+        {
+          "address": "perf_overlay",
+          "type": "u32",
+          "on": "1",
+          "off": "restore"
+        },
+        {
+          "address": "debug_text",
+          "type": "u32",
+          "on": "1",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Never bail",
+      "writes": [
+        {
+          "address": "tune_physics + 680",
+          "type": "float",
+          "on": "-1",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Ice skating",
+      "writes": [
+        {
+          "address": "tune_physics + 170",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "10x XP",
+      "writes": [
+        {
+          "address": "tune_skater + 20",
+          "type": "float",
+          "on": "30",
+          "off": "restore"
+        },
+        {
+          "address": "tune_skater + 80",
+          "type": "float",
+          "on": "50",
+          "off": "restore"
+        },
+        {
+          "address": "tune_skater + 140",
+          "type": "float",
+          "on": "120",
+          "off": "restore"
+        },
+        {
+          "address": "tune_skater + 230",
+          "type": "float",
+          "on": "20",
+          "off": "restore"
+        },
+        {
+          "address": "tune_skater + 1A0",
+          "type": "float",
+          "on": "20",
+          "off": "restore"
+        },
+        {
+          "address": "tune_skater + 320",
+          "type": "float",
+          "on": "100",
+          "off": "restore"
+        },
+        {
+          "address": "tune_skater + 380",
+          "type": "float",
+          "on": "90",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Wide camera",
+      "writes": [
+        {
+          "address": "tune_camera + 170",
+          "type": "float",
+          "on": "100",
+          "off": "restore"
+        },
+        {
+          "address": "1E9FF0",
+          "type": "float",
+          "on": "100",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Pulled-back camera",
+      "writes": [
+        {
+          "address": "tune_camera + 20",
+          "type": "float",
+          "on": "8",
+          "off": "restore"
+        },
+        {
+          "address": "tune_camera + 80",
+          "type": "float",
+          "on": "1",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "No rumble",
+      "writes": [
+        {
+          "address": "tune_vibrate + 20",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + 50",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + B0",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + E0",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + 140",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + 170",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + 1D0",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + 200",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + 260",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + 290",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + 2F0",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        },
+        {
+          "address": "tune_vibrate + 320",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Long-reach grabs",
+      "writes": [
+        {
+          "address": "tune_action + 20",
+          "type": "float",
+          "on": "10",
+          "off": "restore"
+        },
+        {
+          "address": "tune_action + 50",
+          "type": "float",
+          "on": "15",
+          "off": "restore"
+        },
+        {
+          "address": "tune_action + 1D0",
+          "type": "float",
+          "on": "3",
+          "off": "restore"
+        },
+        {
+          "address": "tune_action + 200",
+          "type": "float",
+          "on": "5",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "BoobTech (maxed)",
+      "writes": [
+        {
+          "address": "tune_boobtech + 80",
+          "type": "float",
+          "on": "3",
+          "off": "restore"
+        },
+        {
+          "address": "tune_boobtech + 20",
+          "type": "float",
+          "on": "2000",
+          "off": "restore"
+        },
+        {
+          "address": "tune_boobtech + 50",
+          "type": "float",
+          "on": "0.02",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Unlock all levels",
+      "writes": [
+        {
+          "address": "unlock_levels",
+          "type": "u16",
+          "on": "|0x15F",
+          "off": ""
+        },
+        {
+          "address": "1EB20C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EB71C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EBC2C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EC13C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EC64C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1ECB5C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1ED06C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1ED57C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EDA8C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EDF9C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EE4AC",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EE9BC",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EEECC",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EF3DC",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EF8EC",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1EFDFC",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1F030C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1F081C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1F0D2C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1F123C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        },
+        {
+          "address": "1F174C",
+          "type": "u32",
+          "on": "|0x3FF",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Unlock all cinematics",
+      "writes": [
+        {
+          "address": "unlock_cinematics",
+          "type": "u16",
+          "on": "|0x7F",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Unlock all cheats",
+      "writes": [
+        {
+          "address": "unlock_cheats",
+          "type": "u32",
+          "on": "|0xFE",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Unlock all park editor pieces",
+      "writes": [
+        {
+          "address": "unlock_editor",
+          "type": "u16",
+          "on": "|0x1FF",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Power and Ultra skates",
+      "writes": [
+        {
+          "address": "1EB210",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EB720",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EBC30",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EC140",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EC650",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1ECB60",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1ED070",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1ED580",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EDA90",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EDFA0",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EE4B0",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EE9C0",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EEED0",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EF3E0",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EF8F0",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1EFE00",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1F0310",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1F0820",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1F0D30",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1F1240",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        },
+        {
+          "address": "1F1750",
+          "type": "u32",
+          "on": "|0x180",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "No CHEATER mark",
+      "writes": [
+        {
+          "address": "cheats_used",
+          "type": "u32",
+          "on": "0",
+          "off": ""
+        }
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "name": "Gravity",
+      "address": "tune_physics + 20",
+      "type": "float",
+      "value": "65"
+    },
+    {
+      "name": "Jump",
+      "address": "tune_physics + 80",
+      "type": "float",
+      "value": "16"
+    },
+    {
+      "name": "Max speed",
+      "address": "tune_physics + B0",
+      "type": "float",
+      "value": "16"
+    },
+    {
+      "name": "Acceleration",
+      "address": "tune_physics + 50",
+      "type": "float",
+      "value": "25"
+    },
+    {
+      "name": "Spin speed",
+      "address": "tune_physics + 650",
+      "type": "float",
+      "value": "320"
+    },
+    {
+      "name": "Juice drain",
+      "address": "tune_juice + B0",
+      "type": "float",
+      "value": "2"
+    },
+    {
+      "name": "Juice lost on crash",
+      "address": "tune_juice + 80",
+      "type": "float",
+      "value": "0.5"
+    },
+    {
+      "name": "Wall ride gravity",
+      "address": "tune_grind + 830",
+      "type": "float",
+      "value": "12"
+    },
+    {
+      "name": "Max grind speed",
+      "address": "tune_grind + 80",
+      "type": "float",
+      "value": "28"
+    },
+    {
+      "name": "BoobTech: size",
+      "address": "tune_boobtech + 80",
+      "type": "float",
+      "value": "1"
+    },
+    {
+      "name": "BoobTech: bounce",
+      "address": "tune_boobtech + 20",
+      "type": "float",
+      "value": "800"
+    },
+    {
+      "name": "BoobTech: damping",
+      "address": "tune_boobtech + 50",
+      "type": "float",
+      "value": "0.1"
+    }
+  ],
+  "patches": [],
+  "calls": [
+    {
+      "name": "Debug menu",
+      "address": "0x0004D010",
+      "args": [
+        "edi=6"
+      ],
+      "convention": "cdecl",
+      "string": "",
+      "expect": "1"
+    },
+    {
+      "name": "Art viewer",
+      "address": "0x0004D010",
+      "args": [
+        "edi=0"
+      ],
+      "convention": "cdecl",
+      "string": "",
+      "expect": "1"
+    },
+    {
+      "name": "Test call (returns 31337)",
+      "address": "0x0010A0E1",
+      "args": [
+        "@string"
+      ],
+      "convention": "cdecl",
+      "string": "31337",
+      "expect": "31337"
+    }
+  ],
+  "symbols": {
+    "tune_general": "[1D8390]",
+    "tune_physics": "[1D8408]",
+    "tune_juice": "[1D8480]",
+    "tune_grind": "[1D85C0]",
+    "unlocks": "1EA290",
+    "debug_mode": "1E9FA0",
+    "perf_overlay": "20B774",
+    "debug_text": "20643C",
+    "tune_camera": "[1D83E0]",
+    "tune_skater": "[1D8430]",
+    "tune_action": "[1D85E8]",
+    "tune_boobtech": "[1D8610]",
+    "tune_vibrate": "[1D8660]",
+    "unlock_levels": "1EA294",
+    "unlock_cinematics": "1EA296",
+    "unlock_cheats": "1EA29C",
+    "cheats_used": "1EA2A0",
+    "unlock_editor": "1EA2AA"
+  }
+}

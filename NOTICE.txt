@@ -1,0 +1,5 @@
+OG360 is under the GNU GPL v3 or later (LICENSE.txt).
+
+vendor/py-xbdm is py-xbdm by XeCrippy (https://github.com/XeCrippy/py-xbdm), GNU GPL v3
+(vendor/py-xbdm/LICENSE.txt). changed for OG360 in 2026: added read_memory_binary() to
+py_xbdm/memory.py and py_xbdm/client.py and took the comments out.

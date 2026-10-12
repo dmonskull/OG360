@@ -1,0 +1,262 @@
+{
+ "title_id": "4541005A",
+ "title": "NFS Underground 2",
+ "symbols": {
+  "player": "[449414]",
+  "car": "[player + 4]",
+  "nos": "car + 40",
+  "cash": "405364",
+  "clock_rate": "3E3EB0",
+  "debug_camera": "428910",
+  "pads": "42F7D0",
+  "cheats": "3A4EC0",
+  "gravity": "3A5430"
+ },
+ "switches": [
+  {
+   "name": "Infinite nitrous",
+   "writes": [
+    {
+     "address": "nos + 41C",
+     "type": "u32",
+     "on": "=[nos + 414]",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Infinite cash",
+   "writes": [
+    {
+     "address": "cash",
+     "type": "i32",
+     "on": "9999999",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "All cheat codes",
+   "writes": [
+    {
+     "address": "cheats + 30",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 64",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 98",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + CC",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 100",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 134",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 168",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 19C",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 1D0",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 204",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 238",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 26C",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 2A0",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 2D4",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 308",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 33C",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 370",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 3A4",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 3D8",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "cheats + 40C",
+     "type": "u8",
+     "on": "1",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Slow motion",
+   "group": "speed",
+   "writes": [
+    {
+     "address": "clock_rate",
+     "type": "float",
+     "on": "6.818181645940058e-07",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Super slow motion",
+   "group": "speed",
+   "writes": [
+    {
+     "address": "clock_rate",
+     "type": "float",
+     "on": "3.409090822970029e-07",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Fast forward",
+   "group": "speed",
+   "writes": [
+    {
+     "address": "clock_rate",
+     "type": "float",
+     "on": "2.727272658376023e-06",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Low gravity",
+   "writes": [
+    {
+     "address": "gravity",
+     "type": "float",
+     "on": "3",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Debug camera",
+   "writes": [
+    {
+     "address": "debug_camera",
+     "type": "u32",
+     "on": "1",
+     "off": "restore"
+    },
+    {
+     "address": "pads + DC + D0",
+     "type": "u32",
+     "on": "=[pads + D0 + [player + 8] * DC]",
+     "off": "restore"
+    }
+   ]
+  }
+ ],
+ "entries": [
+  {
+   "name": "Cash",
+   "address": "cash",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "Nitrous left",
+   "address": "nos + 41C",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Nitrous tank",
+   "address": "nos + 414",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Game clock",
+   "address": "clock_rate",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Gravity",
+   "address": "gravity",
+   "type": "float",
+   "value": ""
+  }
+ ],
+ "patches": [],
+ "calls": []
+}

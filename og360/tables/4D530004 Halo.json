@@ -1,0 +1,442 @@
+{
+  "title_id": "4D530004",
+  "title": "Halo",
+  "tag_info": {
+    "table": "tags",
+    "layout": "halo1",
+    "names": "memory",
+    "count": "[tags - 18]"
+  },
+  "switches": [
+    {
+      "name": "God mode",
+      "writes": [
+        {
+          "address": "chief + B7",
+          "type": "u8",
+          "on": "|0x08",
+          "off": "&~0x08"
+        },
+        {
+          "address": "cheats",
+          "type": "u8",
+          "on": "1",
+          "off": "restore"
+        },
+        {
+          "address": "chief + 90",
+          "type": "float",
+          "on": ">=1",
+          "off": ""
+        },
+        {
+          "address": "chief + 94",
+          "type": "float",
+          "on": ">=1",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Infinite ammo",
+      "writes": [
+        {
+          "address": "cheats + 2",
+          "type": "u8",
+          "on": "1",
+          "off": "restore"
+        },
+        {
+          "address": "cheats + 9",
+          "type": "u8",
+          "on": "1",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Infinite grenades",
+      "writes": [
+        {
+          "address": "chief + 2CE",
+          "type": "u8",
+          "on": "4",
+          "off": ""
+        },
+        {
+          "address": "chief + 2CF",
+          "type": "u8",
+          "on": "4",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Super jump",
+      "writes": [
+        {
+          "address": "cheats + 4",
+          "type": "u8",
+          "on": "1",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Super speed",
+      "writes": [
+        {
+          "address": "player + 6C",
+          "type": "float",
+          "on": "2",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "No falling damage",
+      "writes": [
+        {
+          "address": "cheats + 1",
+          "type": "u8",
+          "on": "1",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Play as anyone (bump into them)",
+      "writes": [
+        {
+          "address": "cheats + 3",
+          "type": "u8",
+          "on": "1",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "One-hit kills",
+      "writes": [
+        {
+          "address": "cheats + 7",
+          "type": "u8",
+          "on": "1",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Medusa",
+      "writes": [
+        {
+          "address": "cheats + 6",
+          "type": "u8",
+          "on": "1",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Guns fire",
+      "pick": {
+        "tags": "proj",
+        "default": "weapons\\frag grenade\\frag grenade"
+      },
+      "writes": [
+        {
+          "address": "block(weapon_0_tag + 4FC, 0, 114) + A0",
+          "type": "u32",
+          "on": "=pick",
+          "off": "restore"
+        },
+        {
+          "address": "block(weapon_0_tag + 4FC, 1, 114) + A0",
+          "type": "u32",
+          "on": "=pick",
+          "off": "restore"
+        },
+        {
+          "address": "block(weapon_1_tag + 4FC, 0, 114) + A0",
+          "type": "u32",
+          "on": "=pick",
+          "off": "restore"
+        },
+        {
+          "address": "block(weapon_1_tag + 4FC, 1, 114) + A0",
+          "type": "u32",
+          "on": "=pick",
+          "off": "restore"
+        },
+        {
+          "address": "block(weapon_2_tag + 4FC, 0, 114) + A0",
+          "type": "u32",
+          "on": "=pick",
+          "off": "restore"
+        },
+        {
+          "address": "block(weapon_2_tag + 4FC, 1, 114) + A0",
+          "type": "u32",
+          "on": "=pick",
+          "off": "restore"
+        },
+        {
+          "address": "block(weapon_3_tag + 4FC, 0, 114) + A0",
+          "type": "u32",
+          "on": "=pick",
+          "off": "restore"
+        },
+        {
+          "address": "block(weapon_3_tag + 4FC, 1, 114) + A0",
+          "type": "u32",
+          "on": "=pick",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Free camera",
+      "driver": "halo1.free_camera",
+      "writes": []
+    },
+    {
+      "name": "Freeze world",
+      "group": "speed",
+      "writes": [
+        {
+          "address": "game_time + 18",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Slow motion",
+      "group": "speed",
+      "writes": [
+        {
+          "address": "game_time + 18",
+          "type": "float",
+          "on": "0.3",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Low gravity",
+      "writes": [
+        {
+          "address": "gravity",
+          "type": "float",
+          "on": "0.0017825896",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Freeze AI",
+      "writes": [
+        {
+          "address": "ai_globals",
+          "type": "u8",
+          "on": "0",
+          "off": "1"
+        }
+      ]
+    },
+    {
+      "name": "Permanent active camo",
+      "writes": [
+        {
+          "address": "chief + 32C",
+          "type": "float",
+          "on": "1",
+          "off": "0"
+        },
+        {
+          "address": "chief + 1B4",
+          "type": "u8",
+          "on": "|0x10",
+          "off": "&~0x30"
+        }
+      ]
+    },
+    {
+      "name": "Overshield",
+      "writes": [
+        {
+          "address": "chief + 94",
+          "type": "float",
+          "on": "3",
+          "off": "1"
+        }
+      ]
+    },
+    {
+      "name": "Instant shield recharge",
+      "writes": [
+        {
+          "address": "chief + B4",
+          "type": "i16",
+          "on": "0",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Hide HUD",
+      "writes": [
+        {
+          "address": "hud",
+          "type": "u8",
+          "on": "0",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Giant Master Chief",
+      "group": "size",
+      "writes": [
+        {
+          "address": "chief + 60",
+          "type": "float",
+          "on": "2",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Tiny Master Chief",
+      "group": "size",
+      "writes": [
+        {
+          "address": "chief + 60",
+          "type": "float",
+          "on": "0.5",
+          "off": "restore"
+        }
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "name": "Health",
+      "address": "chief + 90",
+      "type": "float",
+      "value": "1"
+    },
+    {
+      "name": "Shields",
+      "address": "chief + 94",
+      "type": "float",
+      "value": "1"
+    },
+    {
+      "name": "Frag grenades",
+      "address": "chief + 2CE",
+      "type": "u8",
+      "value": "4"
+    },
+    {
+      "name": "Plasma grenades",
+      "address": "chief + 2CF",
+      "type": "u8",
+      "value": "4"
+    },
+    {
+      "name": "Ammo in magazine",
+      "address": "weapon + 260",
+      "type": "u16",
+      "value": "99"
+    },
+    {
+      "name": "Reserve ammo",
+      "address": "weapon + 25E",
+      "type": "u16",
+      "value": "999"
+    },
+    {
+      "name": "Weapon heat",
+      "address": "weapon + 1EC",
+      "type": "float",
+      "value": "0"
+    },
+    {
+      "name": "Weapon battery used",
+      "address": "weapon + 1F0",
+      "type": "float",
+      "value": "0"
+    },
+    {
+      "name": "Position X",
+      "address": "chief + C",
+      "type": "float",
+      "value": "0"
+    },
+    {
+      "name": "Position Y",
+      "address": "chief + 10",
+      "type": "float",
+      "value": "0"
+    },
+    {
+      "name": "Position Z",
+      "address": "chief + 14",
+      "type": "float",
+      "value": "0"
+    },
+    {
+      "name": "Game speed",
+      "address": "game_time + 18",
+      "type": "float",
+      "value": "1"
+    },
+    {
+      "name": "Gravity",
+      "address": "gravity",
+      "type": "float",
+      "value": "0.0035651792"
+    },
+    {
+      "name": "Player size",
+      "address": "chief + 60",
+      "type": "float",
+      "value": "0"
+    }
+  ],
+  "patches": [],
+  "calls": [
+    {
+      "name": "Test call (returns 31337)",
+      "address": "0x0001A858",
+      "args": [
+        "@string"
+      ],
+      "string": "31337",
+      "expect": "31337"
+    }
+  ],
+  "symbols": {
+    "objects": "[2FC6AC]",
+    "players": "[2FAD28]",
+    "player": "datum(players, [[2FAD20] + 4])",
+    "chief": "[datum(objects, [player + 34]) + 8]",
+    "weapon": "[datum(objects, [chief + 2A8 + ([chief + 2A2] & 3) * 4]) + 8]",
+    "weapon_0": "[datum(objects, [chief + 2A8]) + 8]",
+    "weapon_1": "[datum(objects, [chief + 2AC]) + 8]",
+    "weapon_2": "[datum(objects, [chief + 2B0]) + 8]",
+    "weapon_3": "[datum(objects, [chief + 2B4]) + 8]",
+    "tags": "[39CE24]",
+    "game_time": "[2F8CA0]",
+    "ai_globals": "[2FA248]",
+    "hud": "[2E4598]",
+    "cheats": "2FAB50",
+    "gravity": "1FB648",
+    "weapon_0_tag": "[tags + ([weapon_0] & FFFF) * 20 + 14]",
+    "weapon_1_tag": "[tags + ([weapon_1] & FFFF) * 20 + 14]",
+    "weapon_2_tag": "[tags + ([weapon_2] & FFFF) * 20 + 14]",
+    "weapon_3_tag": "[tags + ([weapon_3] & FFFF) * 20 + 14]"
+  }
+}

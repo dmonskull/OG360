@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "name": "xefu2 guest kernel APC",
+  "emulator_timestamp": 1139363422,
+  "kernel_base": 2147549184,
+  "kernel_noop": 2147599277,
+  "current_thread": 2147661060,
+  "irql": 2147661056,
+  "software_pending": 2147662948,
+  "tick": 2147661076,
+  "blocks": [
+    {
+      "address": 2147643793,
+      "original": "909090909090909090909090909090",
+      "preceding_address": 2147643777,
+      "preceding_bytes": "4424140f82c7feffff5f5e5d5bc20800"
+    },
+    {
+      "address": 2147626147,
+      "original": "cccccccccccccccccccccccccc",
+      "preceding_address": 2147626131,
+      "preceding_bytes": "3bc876dcfd03f103f94e4ff3a4fcebe5"
+    },
+    {
+      "address": 2147644115,
+      "original": "90909090909090909090909090",
+      "preceding_address": 2147644099,
+      "preceding_bytes": "24145152e8140000005e83c410c21000"
+    },
+    {
+      "address": 2147596133,
+      "original": "cccccccccccccccccccccc",
+      "preceding_address": 2147596117,
+      "preceding_bytes": "000000c7434c000000003b6d0075bfc3"
+    },
+    {
+      "address": 2147653589,
+      "original": "cccccccccccccccccccccc",
+      "preceding_address": 2147653573,
+      "preceding_bytes": "d17305f7f1c20c00b8ffffffffc20c00"
+    },
+    {
+      "address": 2147639938,
+      "original": "9090909090909090909090909090",
+      "preceding_address": 2147639922,
+      "preceding_bytes": "402476543210c74028f0e1d2c3c20400"
+    },
+    {
+      "address": 2147654179,
+      "original": "90909090909090909090909090",
+      "preceding_address": 2147654163,
+      "preceding_bytes": "83d30083c7084975d55f5e5b5dc20c00"
+    }
+  ],
+  "checks": [
+    {
+      "address": 2147592118,
+      "size": 68,
+      "sha256": "885b0cf3d61453059c0a35ea20e921a33f7143893abe5934b327b6fa663d0729"
+    },
+    {
+      "address": 2147598605,
+      "size": 204,
+      "sha256": "1a7ccf9f03113a9628de17504a1d71efc303497cd0bb958886c301b56c3f66da"
+    },
+    {
+      "address": 2147598809,
+      "size": 238,
+      "sha256": "716572dd914ea813ef4172619e534e082e6227a19bc30f844b93a27f0abe2da4"
+    },
+    {
+      "address": 2147562308,
+      "size": 49,
+      "sha256": "52c2d48a453a6514e6ea71c03bc04374f1316ce961d1675fe6bfd557906f6d64"
+    },
+    {
+      "address": 2147599277,
+      "size": 3,
+      "sha256": "596494f50350462943d59d32bfc675a2c3e2e9a6aa0d0606422e3cbbffd86c6b"
+    }
+  ],
+  "gate_sha256": "31863750373188a8819005a26787173b0fd7d4c2b736b3f8c89ceae73c8a75db",
+  "thunk_blocks": [
+    {
+      "address": 2147639761,
+      "original": "cccccccccccccccccccccccccccccc",
+      "preceding_address": 2147639745,
+      "preceding_bytes": "02000000e87ad1fefffa59e913d4feff"
+    },
+    {
+      "address": 2147620963,
+      "original": "cccccccccccccccccccccccccc",
+      "preceding_address": 2147620947,
+      "preceding_bytes": "32c0c9c3ff75fce8dde9ffffb001c9c3"
+    },
+    {
+      "address": 2147652404,
+      "original": "909090909090909090909090",
+      "preceding_address": 2147652388,
+      "preceding_bytes": "010000005ec20c005f83c8ff5ec20c00"
+    },
+    {
+      "address": 2147652261,
+      "original": "9090909090909090909090",
+      "preceding_address": 2147652245,
+      "preceding_bytes": "4883e90485c077f3b801000000c20800"
+    },
+    {
+      "address": 2147641399,
+      "original": "909090909090909090",
+      "preceding_address": 2147641383,
+      "preceding_bytes": "ff5e8bc75f5d5b81c490000000c20c00"
+    },
+    {
+      "address": 2147625800,
+      "original": "cccccccccccccccc",
+      "preceding_address": 2147625784,
+      "preceding_bytes": "8d45f850ff7510e8e9edffffc9c20c00"
+    },
+    {
+      "address": 2147641926,
+      "original": "90909090909090909090",
+      "preceding_address": 2147641910,
+      "preceding_bytes": "a58bc883e103f3a45f5e5d5b59c20c00"
+    },
+    {
+      "address": 2147651943,
+      "original": "cccccccccccccccccc",
+      "preceding_address": 2147651927,
+      "preceding_bytes": "894e0889560c897e105d5b5f5ec20800"
+    },
+    {
+      "address": 2147643942,
+      "original": "90909090909090909090",
+      "preceding_address": 2147643926,
+      "preceding_bytes": "c70001000057e86ffdffff5f5ec20800"
+    },
+    {
+      "address": 2147652662,
+      "original": "90909090909090909090",
+      "preceding_address": 2147652646,
+      "preceding_bytes": "e8b50500005f5e5d5bc20c008be8ebaf"
+    }
+  ],
+  "thunk_sha256": "cb75ebcb2bdea77dc005c89fb2390ce7c2f66440419e8376cea6ddb7c3a5c242"
+}

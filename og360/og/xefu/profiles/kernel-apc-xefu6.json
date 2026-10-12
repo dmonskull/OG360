@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "name": "xefu6 guest kernel APC",
+  "emulator_timestamp": 1165874536,
+  "kernel_base": 2147549184,
+  "kernel_noop": 2147599293,
+  "current_thread": 2147661092,
+  "irql": 2147661088,
+  "software_pending": 2147662980,
+  "tick": 2147661108,
+  "blocks": [
+    {
+      "address": 2147586530,
+      "original": "cccccccccccccccccccccccccccc",
+      "preceding_address": 2147586514,
+      "preceding_bytes": "040380c7053cfd028057910180c20400"
+    },
+    {
+      "address": 2147626195,
+      "original": "cccccccccccccccccccccccccc",
+      "preceding_address": 2147626179,
+      "preceding_bytes": "3bc876dcfd03f103f94e4ff3a4fcebe5"
+    },
+    {
+      "address": 2147644163,
+      "original": "90909090909090909090909090",
+      "preceding_address": 2147644147,
+      "preceding_bytes": "24145152e8140000005e83c410c21000"
+    },
+    {
+      "address": 2147596149,
+      "original": "cccccccccccccccccccccc",
+      "preceding_address": 2147596133,
+      "preceding_bytes": "000000c7434c000000003b6d0075bfc3"
+    },
+    {
+      "address": 2147653637,
+      "original": "cccccccccccccccccccccc",
+      "preceding_address": 2147653621,
+      "preceding_bytes": "d17305f7f1c20c00b8ffffffffc20c00"
+    },
+    {
+      "address": 2147639986,
+      "original": "9090909090909090909090909090",
+      "preceding_address": 2147639970,
+      "preceding_bytes": "402476543210c74028f0e1d2c3c20400"
+    },
+    {
+      "address": 2147654227,
+      "original": "90909090909090909090909090",
+      "preceding_address": 2147654211,
+      "preceding_bytes": "83d30083c7084975d55f5e5b5dc20c00"
+    }
+  ],
+  "checks": [
+    {
+      "address": 2147592134,
+      "size": 68,
+      "sha256": "885b0cf3d61453059c0a35ea20e921a33f7143893abe5934b327b6fa663d0729"
+    },
+    {
+      "address": 2147598621,
+      "size": 204,
+      "sha256": "1a7ccf9f03113a9628de17504a1d71efc303497cd0bb958886c301b56c3f66da"
+    },
+    {
+      "address": 2147598825,
+      "size": 238,
+      "sha256": "edf5c9c7444cf150fa20c83de58f52156b7dd2c31078cc31b3acfe2e7f66d3a7"
+    },
+    {
+      "address": 2147562324,
+      "size": 49,
+      "sha256": "c4c20969c00f8bae8bcc345c992d4e6833aaf3294453fc0d5d9598f7026be6d0"
+    },
+    {
+      "address": 2147599293,
+      "size": 3,
+      "sha256": "596494f50350462943d59d32bfc675a2c3e2e9a6aa0d0606422e3cbbffd86c6b"
+    }
+  ],
+  "gate_sha256": "45bf6e241dfa8f969e41cc37b70fc7c818851a05faa79f932974a76c72ef96ea",
+  "thunk_blocks": [
+    {
+      "address": 2147639809,
+      "original": "cccccccccccccccccccccccccccccc",
+      "preceding_address": 2147639793,
+      "preceding_bytes": "02000000e85ad1fefffa59e9f3d3feff"
+    },
+    {
+      "address": 2147643841,
+      "original": "909090909090909090909090909090",
+      "preceding_address": 2147643825,
+      "preceding_bytes": "4424140f82c7feffff5f5e5d5bc20800"
+    },
+    {
+      "address": 2147652452,
+      "original": "909090909090909090909090",
+      "preceding_address": 2147652436,
+      "preceding_bytes": "010000005ec20c005f83c8ff5ec20c00"
+    },
+    {
+      "address": 2147652309,
+      "original": "9090909090909090909090",
+      "preceding_address": 2147652293,
+      "preceding_bytes": "4883e90485c077f3b801000000c20800"
+    },
+    {
+      "address": 2147641447,
+      "original": "909090909090909090",
+      "preceding_address": 2147641431,
+      "preceding_bytes": "ff5e8bc75f5d5b81c490000000c20c00"
+    },
+    {
+      "address": 2147641974,
+      "original": "90909090909090909090",
+      "preceding_address": 2147641958,
+      "preceding_bytes": "a58bc883e103f3a45f5e5d5b59c20c00"
+    },
+    {
+      "address": 2147651991,
+      "original": "cccccccccccccccccc",
+      "preceding_address": 2147651975,
+      "preceding_bytes": "894e0889560c897e105d5b5f5ec20800"
+    },
+    {
+      "address": 2147643990,
+      "original": "90909090909090909090",
+      "preceding_address": 2147643974,
+      "preceding_bytes": "c70001000057e86ffdffff5f5ec20800"
+    },
+    {
+      "address": 2147652710,
+      "original": "90909090909090909090",
+      "preceding_address": 2147652694,
+      "preceding_bytes": "e8b50500005f5e5d5bc20c008be8ebaf"
+    }
+  ],
+  "thunk_sha256": "6f2acedbec8d351714213385bb5ee0cf611de158ebb1e571a5bbe080ed121ce3"
+}

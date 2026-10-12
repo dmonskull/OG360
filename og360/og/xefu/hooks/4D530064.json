@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "name": "Halo 2 widget update",
+  "point": "the cloth update (every frame of unpaused gameplay)",
+  "title_id": 1297285220,
+  "xbe_timestamp": 1096338512,
+  "checks": [
+    {
+      "address": 1226304,
+      "size": 6,
+      "sha256": "09e3700db7c03de36e9110a4b3904aaa8e5cca74967b36d136a2161b4b00123b"
+    },
+    {
+      "address": 1277648,
+      "size": 39,
+      "sha256": "61d5e12ceba713c835eea533ea17c4ba808808094a7e19258923a28a5c084007"
+    },
+    {
+      "address": 871856,
+      "size": 38,
+      "sha256": "59ccfdc7572b058b0b9e44baf5123c6590f55cf235812a0314fd193160d61872"
+    },
+    {
+      "address": 1140896,
+      "size": 32,
+      "sha256": "13ebb4c730d98328d7664e5be5de2617ff0b8c3298a84f7ae5d076b6637a1f9e"
+    }
+  ],
+  "pointer": {
+    "address": 4617456
+  },
+  "original": 1140896,
+  "hook": {
+    "blocks": [
+      {
+        "address": 3642949,
+        "original": "cccccccccccccccccccccc",
+        "preceding_address": 3642933,
+        "preceding_bytes": "a3dc6d4600c70574014800d86d4600c3"
+      },
+      {
+        "address": 3642981,
+        "original": "cccccccccccccccccccccc",
+        "preceding_address": 3642965,
+        "preceding_bytes": "a3e86d4600c70574014800e46d4600c3"
+      },
+      {
+        "address": 3643013,
+        "original": "cccccccccccccccccccccc",
+        "preceding_address": 3642997,
+        "preceding_bytes": "a3f46d4600c70574014800f06d4600c3"
+      },
+      {
+        "address": 3643073,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 3643057,
+        "preceding_bytes": "f6ff68409c3700e8f778faff59c3ccc3"
+      },
+      {
+        "address": 3643107,
+        "original": "cccccccccccccccccccccccccc",
+        "preceding_address": 3643091,
+        "preceding_bytes": "510085c074098b48348b1150ff5204c3"
+      },
+      {
+        "address": 3643121,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 3643105,
+        "preceding_bytes": "04c3ccccccccccccccccccccccccccc3"
+      },
+      {
+        "address": 3643137,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 3643121,
+        "preceding_bytes": "ccccccccccccccccccccccccccccccc3"
+      },
+      {
+        "address": 3643153,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 3643137,
+        "preceding_bytes": "ccccccccccccccccccccccccccccccc3"
+      },
+      {
+        "address": 3643185,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 3643169,
+        "preceding_bytes": "be00805200e8c57fd0ff5ec3ccccccc3"
+      },
+      {
+        "address": 3643201,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 3643185,
+        "preceding_bytes": "ccccccccccccccccccccccccccccccc3"
+      },
+      {
+        "address": 3643489,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 3643473,
+        "preceding_bytes": "054c98470048284500c3ccccccccccc3"
+      },
+      {
+        "address": 3643505,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 3643489,
+        "preceding_bytes": "ccccccccccccccccccccccccccccccc3"
+      },
+      {
+        "address": 3643539,
+        "original": "cccccccccccccccccccccccccc",
+        "preceding_address": 3643523,
+        "preceding_bytes": "540085c074098b48348b1150ff5204c3"
+      },
+      {
+        "address": 3643569,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 3643553,
+        "preceding_bytes": "05b098470060374500c3ccccccccccc3"
+      },
+      {
+        "address": 3643603,
+        "original": "cccccccccccccccccccccccccc",
+        "preceding_address": 3643587,
+        "preceding_bytes": "550085c074098b48348b1150ff5204c3"
+      }
+    ]
+  },
+  "mailbox": {
+    "address": 5744640,
+    "first_run": "adadadadadadadadadadadadadadadadadadadadadadadad"
+  },
+  "hook_sha256": "45bce0d241ae86648928a320f0257ddb90c77681ca3d9a1ba80785badde10d33"
+}

@@ -1,0 +1,293 @@
+{
+  "title_id": "4156000E",
+  "title": "True Crime: Streets of LA",
+  "switches": [
+    {
+      "name": "Debug menu (pause screen)",
+      "writes": [
+        {
+          "address": "pause_first + 7C",
+          "type": "u32",
+          "on": "0xA",
+          "off": "0x11"
+        },
+        {
+          "address": "pause_first + 114",
+          "type": "u32",
+          "on": "0x1BA",
+          "off": "0x1C6"
+        }
+      ]
+    },
+    {
+      "name": "God mode",
+      "writes": [
+        {
+          "address": "state + 304",
+          "type": "u8",
+          "on": "1",
+          "off": "0"
+        },
+        {
+          "address": "nick + 1D0",
+          "type": "float",
+          "on": "=[nick + 1CC]",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Free camera",
+      "driver": "truecrime.free_camera",
+      "writes": []
+    },
+    {
+      "name": "Freeze world",
+      "writes": [
+        {
+          "address": "game_mode",
+          "type": "u32",
+          "on": "2",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Slow motion",
+      "writes": [
+        {
+          "address": "time_scale",
+          "type": "float",
+          "on": "0.3",
+          "off": "restore"
+        },
+        {
+          "address": "26AB1C",
+          "type": "float",
+          "on": "0",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Freeze AI",
+      "driver": "truecrime.freeze_ai",
+      "writes": []
+    },
+    {
+      "name": "Super speed",
+      "writes": [
+        {
+          "address": "26AB48",
+          "type": "float",
+          "on": "2.5",
+          "off": "restore"
+        },
+        {
+          "address": "26AB4C",
+          "type": "float",
+          "on": "2.5",
+          "off": "restore"
+        }
+      ]
+    },
+    {
+      "name": "Infinite ammo, no reload",
+      "driver": "truecrime.infinite_ammo",
+      "writes": []
+    },
+    {
+      "name": "Unlock everything",
+      "writes": [
+        {
+          "address": "state + 494",
+          "type": "bytes",
+          "on": "030000000000803f030000000000803f030000000000803f030000000000803f030000000000803f030000000000803f030000000000803f030000000000803f030000000000803f030000000000803f030000000000803f030000000000803f020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000",
+          "off": ""
+        },
+        {
+          "address": "state + 964",
+          "type": "u32",
+          "on": "0x3FFFFFFF",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Lots of reward points",
+      "writes": [
+        {
+          "address": "state + 354",
+          "type": "i32",
+          "on": ">=99999",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Hide HUD",
+      "writes": [
+        {
+          "address": "state + 305",
+          "type": "u8",
+          "on": "0",
+          "off": "1"
+        }
+      ]
+    },
+    {
+      "name": "Hide reticle",
+      "writes": [
+        {
+          "address": "state + 306",
+          "type": "u8",
+          "on": "0",
+          "off": "1"
+        }
+      ]
+    },
+    {
+      "name": "Debug readout",
+      "writes": [
+        {
+          "address": "2A2E25",
+          "type": "u8",
+          "on": "1",
+          "off": "0"
+        }
+      ]
+    },
+    {
+      "name": "Always day",
+      "group": "time",
+      "writes": [
+        {
+          "address": "clock",
+          "type": "u32",
+          "on": "3672000",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Always night",
+      "group": "time",
+      "writes": [
+        {
+          "address": "clock",
+          "type": "u32",
+          "on": "864000",
+          "off": ""
+        }
+      ]
+    },
+    {
+      "name": "Rain",
+      "writes": [
+        {
+          "address": "2AF440",
+          "type": "float",
+          "on": "1",
+          "off": "restore"
+        }
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "name": "Health",
+      "address": "nick + 1D0",
+      "type": "float",
+      "value": "100"
+    },
+    {
+      "name": "Max health",
+      "address": "nick + 1CC",
+      "type": "float",
+      "value": "100"
+    },
+    {
+      "name": "Ammo (right gun)",
+      "address": "nick + 274",
+      "type": "i32",
+      "value": "6"
+    },
+    {
+      "name": "Ammo (left gun)",
+      "address": "nick + 494",
+      "type": "i32",
+      "value": "6"
+    },
+    {
+      "name": "Reward points",
+      "address": "state + 354",
+      "type": "i32",
+      "value": "9999"
+    },
+    {
+      "name": "Good deeds",
+      "address": "state + 364",
+      "type": "i32",
+      "value": "100"
+    },
+    {
+      "name": "Bad deeds",
+      "address": "state + 368",
+      "type": "i32",
+      "value": "0"
+    },
+    {
+      "name": "Clock",
+      "address": "clock",
+      "type": "u32",
+      "value": "3672000"
+    },
+    {
+      "name": "Bullets fired",
+      "address": "state + 3E4",
+      "type": "i32",
+      "value": "0"
+    },
+    {
+      "name": "Bullets hit",
+      "address": "state + 3EC",
+      "type": "i32",
+      "value": "0"
+    },
+    {
+      "name": "Game speed",
+      "address": "time_scale",
+      "type": "float",
+      "value": "1"
+    }
+  ],
+  "patches": [],
+  "calls": [
+    {
+      "name": "Test call (active camera)",
+      "address": "0x000D68A0",
+      "args": [],
+      "string": "",
+      "expect": ""
+    },
+    {
+      "name": "Test call (strchr)",
+      "address": "0x001EF6A0",
+      "args": [
+        "@string",
+        "119"
+      ],
+      "string": "hello world",
+      "expect": ""
+    }
+  ],
+  "symbols": {
+    "state": "[2A2D38]",
+    "nick": "[2A2DB0]",
+    "clock": "2ADA84",
+    "shell": "[2C5AF0]",
+    "pause_first": "[[[[shell + 50] + 88] + 74] + 8]",
+    "game_mode": "2AD938",
+    "time_scale": "2AD948"
+  }
+}
