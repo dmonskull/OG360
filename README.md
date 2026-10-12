@@ -13,3 +13,9 @@ the memory tools work on any og game. these ones also come with ready made mods:
 - gauntlet dark legacy (just a few values for now)
 
 more features are planned for the future.
+
+if you want to know how it works or do it yourself check out [HOW-IT-WORKS.md](HOW-IT-WORKS.md).
+
+## credits
+
+[XeCrippy](https://github.com/XeCrippy) for [py-xbdm](https://github.com/XeCrippy/py-xbdm). everything OG360 sends to the console goes through it.
