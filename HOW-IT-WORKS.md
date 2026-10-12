@@ -143,8 +143,8 @@ all hex:
 
 ## xefu notes
 
-- xefu turns the x86 into ppc and keeps it forever. changing code the game already ran does nothing. if you change your gate bytes restart the game first, and always write the same bytes to the same spot.
-- new code does run if the game never ran that spot before and you get there through a pointer read at runtime, like the apc or a function pointer in data.
+- xefu turns the x86 into ppc and keeps it forever, and it does that early, right as the game loads. so writing over the games code does nothing, even code the game hasnt run yet. if you change your gate bytes restart the game first, and always write the same bytes to the same spot.
+- new code does run if its somewhere that never had code, like int3 padding, and you get there through a pointer read at runtime, like the apc or a function pointer in data. thats how to change what the game does while its running.
 - swapping a return address on the stack doesnt work, xefu checks returns against its own copy.
 - xefu only runs code in the ranges it registered (the games xbe sections and the kernels code) so your target has to be in there.
 - max 6 stack args plus eax ecx edx esi edi. no ebx or ebp and no xmm, and halo 2 passes floats in xmm a lot.
