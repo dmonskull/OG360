@@ -21,6 +21,14 @@ more features are planned for the future.
 
 a jtag/rgh xbox 360 with xbdm, and jrpc2 added as a plugin in dashlaunch. without jrpc2 the memory stuff and mods still work, but OG360 cant keep the xbox online in games like halo 2 and screenshots only work in some games.
 
+## python
+
+made and tested on python 3.13 with tk 9.1. anything from 3.9 up with tkinter works, the launcher sets up numpy and pillow on its own.
+
+- mac: `brew install python@3.13 python-tk@3.13`, or the installer from python.org (tk comes with it). tk older than 8.6.13 works but clicks can just focus the window first
+- windows: python 3.13 from python.org
+- linux: python3 with tkinter (`sudo apt install python3-tk python3-venv`)
+
 ## quick guide
 
 **search** finds a value like health or ammo.
