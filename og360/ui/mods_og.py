@@ -9,7 +9,10 @@ from .. import paths
 from ..log import describe
 from ..og import caller, values
 from ..og.mods import call_args, call_items, split_arg
+from ..x360 import games
 from .common import HEADING, MONO, TITLE, Form, ScrollFrame, hex8, make_tree, open_folder
+
+SAVE_WAIT = 10.0
 
 TYPE_LABELS = [values.LABELS[t] for t in values.ALL]
 ADDRESS_NOTE = ("address from ghidra (hex). names and formulas work too: BB85B8 + 2*6140, [C01234] + 10 to "
@@ -571,7 +574,7 @@ class OGModsTab(ScrollFrame):
                   "", self.call_scratch.get(), convention=self.call_conv.get(), from_row=True)
 
     def call(self, address, args, string="", expect="", scratch="", name=None, call_id=None, from_row=False,
-             convention="cdecl"):
+             convention="cdecl", saves=False):
         s = self.app.s
         if self.calling:
             return self.app.say("a call is still running")
@@ -600,15 +603,28 @@ class OGModsTab(ScrollFrame):
         self.call_result.configure(text="Calling %s..." % shown, foreground="")
         self.call_detail.configure(text="the game pauses for a sec while the call gets set up. the log shows each step")
 
+        listing = lambda folder: s.console.lines('dirlist name="%s"' % folder)
+
         def work():
-            return s.caller.call(plan["address"], *slots, convention=convention, expected=expected, string=text,
-                                 scratch=scratch, title_id=title_id)
+            before = games.save_stamp(listing, title_id) if saves else None
+            eax = s.caller.call(plan["address"], *slots, convention=convention, expected=expected, string=text,
+                                scratch=scratch, title_id=title_id)
+            if not saves:
+                return eax, None
+            deadline = time.monotonic() + SAVE_WAIT
+            while time.monotonic() < deadline:
+                now = games.save_stamp(listing, title_id)
+                if now is not None and (before is None or now > before):
+                    return eax, True
+                time.sleep(0.25)
+            return eax, False
 
         def finish():
             self.calling = False
             self.call_btn.configure(state="normal")
 
-        def done(eax):
+        def done(result):
+            eax, saved = result
             finish()
             v = caller.eax_views(eax)
             got = s.caller.last_result or {}
@@ -617,14 +633,18 @@ class OGModsTab(ScrollFrame):
                 extra += "   float result %r" % got["float"]
             if got.get("xmm0") is not None:
                 extra += "   XMM0 %r" % got["xmm0"]
+            if saved is not None:
+                extra += "   saved" if saved else "   didnt save, the games save file didnt change"
             self.call_result.configure(text="%s = %d   %s   signed %d   as float %g%s" % (
-                shown, v["dec"], v["hex"], v["signed"], v["float"], extra), foreground="")
+                shown, v["dec"], v["hex"], v["signed"], v["float"], extra),
+                foreground=self.app.pal["bad"] if saved is False else "")
             self.call_detail.configure(text=self._report_text(s))
             if from_row:
                 self.last_call = (plan["address"], tuple(args), text or "", eax, convention)
             if call_id is not None:
-                mods.set_call_result(call_id, "EAX = %d (0x%08X)%s" % (
-                    eax, eax, "" if got.get("float") is None else ", float %r" % got["float"]))
+                mods.set_call_result(call_id, "EAX = %d (0x%08X)%s%s" % (
+                    eax, eax, "" if got.get("float") is None else ", float %r" % got["float"],
+                    "" if saved is None else ", saved" if saved else ", didnt save"))
                 self.refresh()
 
         def bad(err):
@@ -640,7 +660,8 @@ class OGModsTab(ScrollFrame):
             self.app.fail(err)
 
         self.app.act("Call %s%s" % (shown, "  (%s)" % name if name else ""), work, done, bad,
-                     result=lambda eax: "EAX = %d (0x%08X)" % (eax, eax))
+                     result=lambda r: "EAX = %d (0x%08X)%s" % (r[0], r[0], "" if r[1] is None else ", saved" if r[1]
+                                                                   else ", didnt save (the save file didnt change)"))
 
     @staticmethod
     def _report(s):
@@ -675,7 +696,7 @@ class OGModsTab(ScrollFrame):
         c = self._call()
         if c:
             self.call(c["address"], c["args"], c.get("string", ""), c.get("expect", ""), name=c["name"], call_id=c["id"],
-                      convention=c.get("convention", "cdecl"))
+                      convention=c.get("convention", "cdecl"), saves=bool(c.get("saves")))
 
     def load_call(self):
         c = self._call()

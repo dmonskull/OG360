@@ -12,7 +12,8 @@ the memory tools work on any og xbox game. these ones also come with ready made 
 - need for speed underground 2
 - gauntlet dark legacy (just a few values for now)
 - destroy all humans
-- mortal kombat deception (not tested yet)
+- mortal kombat deception (unlocks, free camera, save your profile)
+- area 51 (god mode, unlimited ammo, all weapons, level select, unlock all secrets)
 - dave mirra freestyle bmx 2 (unlocks, not tested yet)
 
 more features are planned for the future.

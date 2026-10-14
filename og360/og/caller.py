@@ -204,6 +204,11 @@ SAFE_RETURNS = {
     0x54540009: (0x0022412E,),
 }
 
+HOOK_ONLY = {
+    0x4D570019,
+    0x4D570005,
+}
+
 
 class FunctionCaller:
     def __init__(self, console, log, reports=None):
@@ -262,7 +267,7 @@ class FunctionCaller:
             try:
                 return self._attempt(plan, expected, string, scratch, title_id, last=attempt == RETRIES)
             except kernel_apc.SafePointTimeout:
-                if plan['when'] != 'auto' or title_id in SAFE_RETURNS or not self._withdrawn():
+                if plan['when'] != 'auto' or title_id in SAFE_RETURNS or title_id in HOOK_ONLY or not self._withdrawn():
                     raise
                 self.log.note("main thread didnt wake up in time and nothing ran, calling right away instead")
                 plan['when'] = 'now'

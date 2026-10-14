@@ -58,3 +58,31 @@ def find(list_folder, start=HDD, progress=None):
 
 def boot(command, game):
     return command('magicboot title="%s" directory="%s"' % (game.path, game.folder))
+
+
+UDATA = "Hdd:\\Compatibility\\Xbox1\\UDATA"
+
+
+def save_stamp(list_folder, title_id):
+    top = "%s\\%08x" % (UDATA, title_id)
+    newest, todo = None, [top]
+    while todo:
+        folder = todo.pop()
+        try:
+            lines = list_folder(folder)
+        except Exception:
+            if folder == top:
+                return None
+            continue
+        for line in lines:
+            name = re.search(r'name="([^"]+)"', line)
+            if not name:
+                continue
+            if line.rstrip().endswith("directory"):
+                todo.append(folder + "\\" + name.group(1))
+                continue
+            f = dict(re.findall(r"(\w+)=(0x[0-9a-fA-F]+)", line))
+            if "changehi" in f and "changelo" in f:
+                t = (int(f["changehi"], 16) << 32) | int(f["changelo"], 16)
+                newest = t if newest is None else max(newest, t)
+    return newest

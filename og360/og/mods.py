@@ -139,8 +139,10 @@ class ModTable:
         self.switches = []
         for sw in data.get("switches", []):
             self.switches.append({"id": self._next_id, "name": sw.get("name", "Unnamed switch"), "note": sw.get("note", ""),
-                                  "writes": [{k: str(w.get(k, "u32" if k == "type" else "")).strip()
-                                              for k in ("address", "type", "on", "off")} for w in sw.get("writes", [])],
+                                  "writes": [dict({k: str(w.get(k, "u32" if k == "type" else "")).strip()
+                                                   for k in ("address", "type", "on", "off")},
+                                                  **({"once": True} if w.get("once") else {}))
+                                             for w in sw.get("writes", [])],
                                   "driver": str(sw.get("driver", "")), "group": str(sw.get("group", "")),
                                   "pick": dict(sw["pick"]) if sw.get("pick") else None,
                                   "picked_name": str(sw.get("picked_name", "")), "picked": None, "on": False})
@@ -155,8 +157,9 @@ class ModTable:
                 "title": self.title,
                 "entries": [{k: e.get(k, "") for k in ("name", "address", "type", "value", "note")} for e in self.entries],
                 "patches": [{k: p.get(k, "") for k in ("name", "address", "on", "off", "note")} for p in self.patches],
-                "calls": [{k: c.get(k, "" if k != "args" else []) for k in ("name", "address", "args", "convention",
-                                                                              "string", "expect", "note")}
+                "calls": [dict({k: c.get(k, "" if k != "args" else []) for k in ("name", "address", "args", "convention",
+                                                                                   "string", "expect", "note")},
+                               **({"saves": True} if c.get("saves") else {}))
                           for c in self.calls],
                 "switches": [dict({"name": w["name"], "note": w["note"], "writes": [dict(x) for x in w["writes"]]},
                                   **{k: w[k] for k in ("driver", "group", "pick", "picked_name") if w.get(k)})
@@ -178,7 +181,7 @@ class ModTable:
             for c in data.get("calls", []):
                 self.add_call(c.get("name", ""), c.get("address", ""), c.get("args", []),
                               c.get("string", ""), c.get("expect", ""), c.get("note", ""),
-                              convention=c.get("convention", "cdecl"))
+                              convention=c.get("convention", "cdecl"), saves=bool(c.get("saves")))
             for sw in data.get("switches", []):
                 self.add_switch(sw.get("name", ""), sw.get("writes", []), sw.get("note", ""),
                                 driver=sw.get("driver", ""), group=sw.get("group", ""))
@@ -339,7 +342,7 @@ class ModTable:
         patch["enabled"] = bool(enable)
 
 
-    def add_call(self, name, address, args=(), string="", expect="", note="", convention="cdecl"):
+    def add_call(self, name, address, args=(), string="", expect="", note="", convention="cdecl", saves=False):
         address = "0x%08X" % call_address(address)
         args = call_args(args)
         convention = call_convention(convention)
@@ -350,6 +353,8 @@ class ModTable:
             call = {"id": self._next_id, "name": name or "Unnamed call", "address": address, "args": args,
                     "convention": convention, "string": string or "", "expect": str(expect or ""), "note": note,
                     "last": ""}
+            if saves:
+                call["saves"] = True
             self._next_id += 1
             self.calls.append(call)
             return call
@@ -416,7 +421,7 @@ class ModTable:
                     self.guest.check(v[1:])
             elif v and v != "restore" and not values.bit_op(t, v) and values.at_least(t, v) is None:
                 values.encode(t, v)
-        return {"address": address, "type": t, "on": on, "off": off}
+        return dict({"address": address, "type": t, "on": on, "off": off}, **({"once": True} if w.get("once") else {}))
 
     def add_switch(self, name, writes, note="", driver="", group=""):
         writes = [self._check_write(w) for w in writes]
@@ -635,6 +640,9 @@ class ModTable:
                 try:
                     addr = self.guest.resolve(w["address"], memo)
                     first = (i, addr) not in touched
+                    if w.get("once") and not first:
+                        done += 1
+                        continue
                     if w["on"] == "hold":
                         touched[(i, addr)] = self._hold(w["type"], addr, None if first else touched[(i, addr)])
                         done += 1

@@ -1,3 +1,4 @@
+import hashlib
 import math
 import struct
 import threading
@@ -6,6 +7,8 @@ import time
 from ..log import describe
 from . import tagnames
 from .guest import Empty, Unmapped
+from .xefu import game_hook
+from .xefu.kernel_apc import SafePointTimeout
 
 DRIVERS = {}
 
@@ -1359,3 +1362,411 @@ class MafiaMissionSelect(Driver):
         if self.wanted:
             return self._ask()
         return "on: %s loaded" % self.loaded
+
+
+MK_CAMERA_OBJECT = 0x6217F4
+MK_CAMERA_HANDLE = 0x6217F8
+MK_CAMERA_SERIAL = 0x6217FC
+MK_FIGHT_CAMERA_ON = 0x46B8EC
+MK_CAMERA_GLIDE = 0x6217E0
+MK_PADS, MK_PAD_SIZE = 0x62109C, 0x1C
+MK_P1_PORT = 0x620FC4
+MK_PAUSE_FLAGS = 0x620F20
+MK_IGNORE_PAD = 0x1
+MK_RWCAMERA = 0x46B8B4
+MK_A, MK_B, MK_RT, MK_LT = 0x40, 0x20, 0x2, 0x4
+
+
+@register("mk.free_camera")
+class MKFreeCamera(Driver):
+    freeze = True
+    speed = 3.0
+    turn = 1.8
+    pitch_limit = 1.45
+    dead_zone = 0.25
+
+    def _object(self):
+        g = self.guest
+        obj, handle = _u32(g, MK_CAMERA_OBJECT), _u32(g, MK_CAMERA_HANDLE)
+        if not obj or not handle or _u32(g, handle + 4) != _u32(g, MK_CAMERA_SERIAL):
+            return 0
+        return obj
+
+    def begin(self):
+        g = self.guest
+        self.obj = self._object()
+        if not self.obj:
+            raise ValueError("no fight camera yet, start a fight")
+        self.pos = list(struct.unpack("<3f", g.read(self.obj + 0xA0, 12)))
+        self.pitch, self.yaw = struct.unpack("<2f", g.read(self.obj + 0xD0, 8))
+        if self.pitch > math.pi:
+            self.pitch -= 2 * math.pi
+        if not all(map(math.isfinite, self.pos + [self.pitch, self.yaw])):
+            raise ValueError("camera has no position yet")
+        self.pitch = max(-self.pitch_limit, min(self.pitch_limit, self.pitch))
+        port = struct.unpack("<i", g.read(MK_P1_PORT, 4))[0]
+        self.pad = MK_PADS + (port if 0 <= port <= 3 else 0) * MK_PAD_SIZE
+        self.pad_ignored_before = _u32(g, self.pad) & MK_IGNORE_PAD
+        self.switch_before = _u32(g, MK_FIGHT_CAMERA_ON)
+        self.paused_before = _u32(g, MK_PAUSE_FLAGS) >> 13 & 1
+        self._keep()
+        self.writes = 0
+
+    def _keep(self):
+        g = self.guest
+        if _u32(g, MK_FIGHT_CAMERA_ON) != 0:
+            g.write(MK_FIGHT_CAMERA_ON, struct.pack("<I", 0))
+        flags = _u32(g, self.pad)
+        if not flags & MK_IGNORE_PAD:
+            g.write(self.pad, struct.pack("<I", flags | MK_IGNORE_PAD))
+        if self.freeze:
+            paused = _u32(g, MK_PAUSE_FLAGS)
+            if not paused & 0x2000:
+                g.write(MK_PAUSE_FLAGS, struct.pack("<I", paused | 0x2000))
+
+    def _view(self, cp, sp, cy, sy):
+        g = self.guest
+        rwcam = _u32(g, MK_RWCAMERA)
+        frame = _u32(g, rwcam + 4) if rwcam else 0
+        if not frame:
+            return
+        rows = ((cy, 0.0, -sy), (sy * sp, cp, cy * sp), (sy * cp, -sp, cy * cp), tuple(self.pos))
+        for matrix in (frame + 0x10, frame + 0x50):
+            for n, row in enumerate(rows):
+                g.write(matrix + n * 0x10, struct.pack("<3f", *row))
+
+    def _axis(self, value):
+        v = max(-1.0, min(1.0, value / 127.0))
+        return 0.0 if abs(v) < self.dead_zone else math.copysign((abs(v) - self.dead_zone) / (1.0 - self.dead_zone), v)
+
+    def tick(self, dt):
+        g = self.guest
+        obj = self._object()
+        if not obj:
+            raise Empty("no fight camera right now")
+        if obj != self.obj:
+            self.obj = obj
+        raw = g.read(self.pad, MK_PAD_SIZE)
+        buttons = struct.unpack_from("<I", raw, 0x10)[0]
+        sticks = raw[0x18:0x1C]
+        if sticks == bytes(4):
+            look_x = look_y = move_x = move_y = 0.0
+        else:
+            look_y, look_x = self._axis(0x7F - sticks[0]), self._axis(sticks[1] - 0x80)
+            move_y, move_x = self._axis(0x7F - sticks[2]), self._axis(sticks[3] - 0x80)
+        boost = 3.0 if buttons & MK_A else 0.3 if buttons & MK_B else 1.0
+        rise = (1.0 if buttons & MK_RT else 0.0) - (1.0 if buttons & MK_LT else 0.0)
+        self.yaw -= look_x * self.turn * dt
+        self.pitch = max(-self.pitch_limit, min(self.pitch_limit, self.pitch - look_y * self.turn * 0.75 * dt))
+        cp, sp, cy, sy = math.cos(self.pitch), math.sin(self.pitch), math.cos(self.yaw), math.sin(self.yaw)
+        step = self.speed * boost * dt
+        self.pos[0] += (sy * cp * move_y - cy * move_x) * step
+        self.pos[1] += (-sp * move_y + rise) * step
+        self.pos[2] += (cy * cp * move_y + sy * move_x) * step
+        g.write(self.obj + 0xA0, struct.pack("<3f", *self.pos))
+        g.write(self.obj + 0xD0, struct.pack("<3f", self.pitch, self.yaw % (2 * math.pi), 0.0))
+        if self.freeze:
+            self._view(cp, sp, cy, sy)
+        self.writes += 1
+        if self.writes % 5 == 0:
+            self._keep()
+        return "on: fight paused" if self.freeze else "on"
+
+    def end(self):
+        g = self.guest
+        if self.freeze and not self.paused_before:
+            g.write(MK_PAUSE_FLAGS, struct.pack("<I", _u32(g, MK_PAUSE_FLAGS) & ~0x2000 & 0xFFFFFFFF))
+        if self.switch_before:
+            g.write(MK_CAMERA_GLIDE, struct.pack("<I", 1))
+            g.write(MK_FIGHT_CAMERA_ON, struct.pack("<I", self.switch_before))
+        if not self.pad_ignored_before:
+            flags = _u32(g, self.pad)
+            g.write(self.pad, struct.pack("<I", flags & ~MK_IGNORE_PAD & 0xFFFFFFFF))
+
+
+A51_OBJECTS = 0x488540
+A51_SLOTS = 0x488EBC
+A51_PLAYER_SLOT = 0x488960
+A51_PLAYER_VTABLE = 0x36A010
+A51_STATE = 0x43535C
+A51_PLAYING = 0x53
+A51_GAME_TYPE = 0x4D9A20
+A51_MENU_PAUSE = 0x435334
+A51_EXIT = 0x488098
+A51_CAMPAIGN_INDEX = 0x43593C
+A51_MAP = 0x487F38
+A51_WEAPONS = {1: "scanner", 2: "desert eagle", 3: "dual eagles", 4: "smp", 5: "dual smps", 6: "shotgun",
+               7: "dual shotguns", 8: "sniper rifle", 9: "bbg", 10: "meson cannon", 11: "turret", 12: "mutation"}
+A51_LEVELS = (
+    (1000, "Welcome to Dreamland"), (1010, "Deep Underground"), (1020, "The Hot Zone"), (1030, "The Search"),
+    (1040, "They Get Bigger"), (1050, "The Last Stand"), (1060, "One of Them"), (1070, "Internal Changes"),
+    (1075, "Life or Death"), (1080, "Dr. Cray"), (1090, "Hatching Parasites"), (1095, "Project: Blue Book"),
+    (1100, "Lies of the Past"), (1105, "Buried Secrets"), (1110, "Now Boarding"), (1115, "The Grays"),
+    (1120, "Descent"), (1125, "The Ascension"), (1130, "The Last Exit"),
+)
+
+
+def a51_player(g):
+    slot = struct.unpack("<H", g.read(A51_PLAYER_SLOT, 2))[0]
+    if slot == 0xFFFF:
+        raise Empty("no player right now")
+    return g.object(A51_SLOTS + slot * 0x20, A51_PLAYER_VTABLE)
+
+
+def a51_object_by_guid(g, lo, hi):
+    if lo == 0xFFFFFFFF:
+        return 0
+    entries, _, count, buckets = struct.unpack("<4I", g.read(A51_OBJECTS + 8, 16))
+    if not count:
+        return 0
+    index = _u32(g, buckets + ((lo + hi) & 0xFFFFFFFF) % count * 4)
+    for _ in range(256):
+        if index == 0xFFFFFFFF:
+            return 0
+        e_lo, e_hi, slot, index = struct.unpack("<4I", g.read(entries + index * 0x18, 16))
+        if (e_lo, e_hi) == (lo, hi):
+            return _u32(g, A51_SLOTS + slot * 0x20)
+    return 0
+
+
+def a51_gun(g, player, gun):
+    lo, hi = struct.unpack("<2I", g.read(player + 0x1D8 + gun * 8, 8))
+    return a51_object_by_guid(g, lo, hi) if lo or hi else 0
+
+
+def a51_fill(g, gun):
+    ammo = struct.unpack("<11i", g.read(gun + 0xB8, 0x2C))
+    for at in (0, 7):
+        total, most, clip_size, clip = ammo[at:at + 4]
+        if most <= 0 or clip_size <= 0:
+            continue
+        if clip < clip_size:
+            g.write(gun + 0xB8 + at * 4 + 0xC, struct.pack("<i", clip_size))
+        if total < most:
+            g.write(gun + 0xB8 + at * 4, struct.pack("<i", most))
+
+
+A51_GUN_SLOTS = (
+    (0x3761CC, 0xB10F0),
+    (0x375B3C, 0xAF050),
+    (0x36F8AC, 0xAF050),
+    (0x3729D4, 0x7F230),
+    (0x379A34, 0x7F230),
+    (0x3776A4, 0xBCBC0),
+    (0x37B7E4, 0xE3DB0),
+    (0x3700E4, 0x8A5D0),
+)
+A51_AMMO_GAP = 15
+A51_AMMO_BODY = (0x2A5201, 0x2A5221, 0x2A5241, 0x2A5261, 0x2A5281, 0x2A52A1, 0x2A52C1, 0x2A52E1, 0x2A5321, 0x2A5341,
+                 0x2A5381, 0x2A53A1, 0x2A53C1, 0x2A53E1, 0x2A5401)
+A51_AMMO_ENTRIES = {0xB10F0: 0x2A5461, 0xAF050: 0x2A54A1, 0x7F230: 0x2A54C1, 0xBCBC0: 0x2A54E1, 0xE3DB0: 0x2A5501,
+                    0x8A5D0: 0x2A5521}
+A51_AMMO_SHA256 = "e43f025c9a8f574c9e13a88333534872112298869429d6c524ac92c6b86ef2f7"
+
+
+def a51_ammo_code():
+    u = lambda v: struct.pack("<I", v)
+    body = [b"\x50", b"\x52",
+            b"\x0f\xb7\x05" + u(A51_PLAYER_SLOT),
+            b"\x3d\xff\xff\x00\x00", ("jcc", 0x84, "done"),
+            b"\xc1\xe0\x05", b"\x8b\x80" + u(A51_SLOTS),
+            b"\x85\xc0", ("jcc", 0x84, "done"),
+            b"\x8b\x50\x08", b"\x3b\x91" + u(0x5C0), ("jcc", 0x85, "done"),
+            b"\x8b\x50\x0c", b"\x3b\x91" + u(0x5C4), ("jcc", 0x85, "done")]
+    for n, (have, most) in enumerate(((0xC4, 0xC0), (0xB8, 0xBC), (0xE0, 0xDC), (0xD4, 0xD8))):
+        body += [b"\x8b\x91" + u(most), b"\x3b\x91" + u(have),
+                 ("jcc", 0x8E, "n%d" % n), b"\x89\x91" + u(have), ("label", "n%d" % n)]
+    body += [("label", "done"), b"\x5a", b"\x58", b"\xc3"]
+    blocks = lambda addresses: [{"address": a, "original": "cc" * A51_AMMO_GAP} for a in addresses]
+    pieces = list(zip(A51_AMMO_BODY, game_hook.layout(body, blocks(A51_AMMO_BODY))))
+    for original, at in A51_AMMO_ENTRIES.items():
+        pieces += [(at, game_hook.layout([b"\x68" + u(original), ("jmp", A51_AMMO_BODY[0])], blocks([at]))[0])]
+    if hashlib.sha256(b"".join(u(a) + c for a, c in pieces)).hexdigest() != A51_AMMO_SHA256:
+        raise RuntimeError("the refill code changed, it cant go into a running game")
+    return pieces
+
+
+@register("a51.ammo")
+class A51Ammo(Driver):
+    rate = 0.2
+
+    def begin(self):
+        g = self.guest
+        for slot, original in A51_GUN_SLOTS:
+            if _u32(g, slot) not in (original, A51_AMMO_ENTRIES[original]):
+                raise ValueError("gun slot %08X holds something else" % slot)
+        pieces = a51_ammo_code()
+        states = set()
+        for a, code in pieces:
+            now = g.read(a, A51_AMMO_GAP)
+            states.add("fresh" if now == b"\xcc" * A51_AMMO_GAP else
+                       "ours" if now == code + b"\xcc" * (A51_AMMO_GAP - len(code)) else "other")
+        if states not in ({"fresh"}, {"ours"}):
+            raise ValueError("the padding for the refill has something else in it")
+        if states == {"fresh"}:
+            for a, code in pieces:
+                g.write(a, code)
+            if any(g.read(a, len(code)) != code for a, code in pieces):
+                raise ValueError("the refill didnt write right")
+        for slot, original in A51_GUN_SLOTS:
+            g.write(slot, struct.pack("<I", A51_AMMO_ENTRIES[original]))
+        return "on: run by the game, nothing sent while on"
+
+    def tick(self, dt):
+        return self.status
+
+    def end(self):
+        g = self.guest
+        for slot, original in A51_GUN_SLOTS:
+            if _u32(g, slot) == A51_AMMO_ENTRIES[original]:
+                g.write(slot, struct.pack("<I", original))
+
+
+@register("a51.all_weapons")
+class A51AllWeapons(Driver):
+    rate = 2.0
+    GUNS = (2, 4, 5, 6, 7, 8, 9, 10)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._done_for, self._given = None, []
+
+    def tick(self, dt):
+        g = self.guest
+        player = a51_player(g)
+        if player != self._done_for:
+            given = []
+            for gun in self.GUNS:
+                if a51_gun(g, player, gun):
+                    if struct.unpack("<f", g.read(player + 0x130 + gun * 4, 4))[0] < 1.0:
+                        g.write(player + 0x130 + gun * 4, struct.pack("<f", 1.0))
+                    given.append(A51_WEAPONS[gun])
+            self._done_for, self._given = player, given
+        return "on: %s" % (", ".join(self._given) if self._given else "this level has no other guns")
+
+
+A51_PLAY_LIST = 0x4B0B3C
+A51_CARRY = 0x435C38
+A51_SESSION = 0x4DC1C4
+A51_LOAD_LEVEL = 0x1B1F70
+A51_ADD_ITEM = 0x615B0
+A51_SWITCH_GUN = 0x10DD40
+A51_STARTER_GUNS = (2, 4)
+A51_OTHER_GUNS = (6, 8, 5, 7, 9, 10)
+
+
+def a51_campaign_spot(g, map_id):
+    base, count = struct.unpack("<Ii", g.read(A51_PLAY_LIST, 8))
+    if not base or not 0 < count <= 1000:
+        return None
+    raw = g.read(base, count * 0x14)
+    return next((i for i in range(count) if struct.unpack_from("<ii", raw, i * 0x14) == (-2, map_id)), None)
+
+
+@register("a51.level_select")
+class A51LevelSelect(Driver):
+    rate = 4.0
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.wanted = None
+        self.loading = None
+        self._gone = False
+        self.arm = False
+        self._loaded = ""
+        self._arm_again = 0.0
+
+    @classmethod
+    def choices(cls, g, names):
+        return [{"datum": -1, "name": "Next level (skip this one)", "path": ""}] + \
+               [{"datum": i, "name": "%d %s" % (i + 1, name), "path": ""} for i, (_, name) in enumerate(A51_LEVELS)]
+
+    def _want(self):
+        picked = self.switch.get("picked") if self.switch else None
+        self.wanted = picked if isinstance(picked, int) and -1 <= picked < len(A51_LEVELS) else -1
+
+    def _ask(self):
+        g = self.guest
+        if _u32(g, A51_STATE) != A51_PLAYING or struct.unpack("<i", g.read(A51_GAME_TYPE, 4))[0] != -2:
+            raise ValueError("get into a campaign level first")
+        if _u32(g, A51_MENU_PAUSE):
+            raise ValueError("unpause the game first")
+        if _u32(g, A51_EXIT) or not _u32(g, A51_SESSION):
+            raise ValueError("this level is already ending")
+        if self.caller is None:
+            raise ValueError("cant call the game from here")
+        here = struct.unpack("<i", g.read(A51_MAP, 4))[0]
+        if self.wanted < 0:
+            at = next((i for i, (m, _) in enumerate(A51_LEVELS) if m == here), None)
+            if at is None or at + 1 >= len(A51_LEVELS):
+                raise ValueError("there is no next level from here")
+            target = A51_LEVELS[at + 1]
+        else:
+            target = A51_LEVELS[self.wanted]
+        spot = a51_campaign_spot(g, target[0])
+        if spot is None:
+            raise ValueError("%s isnt in the games level list" % target[1])
+        fresh, self._gone = self.wanted >= 0, False
+        g.write(A51_CAMPAIGN_INDEX, struct.pack("<i", spot - 1))
+        self.caller.call(A51_LOAD_LEVEL, 0, convention="stdcall", title_id=0x4D570005, when="safe")
+        self.loading = (here, target[1], fresh)
+        return "on: loading %s" % target[1]
+
+    def _check(self):
+        here, name, fresh = self.loading
+        g = self.guest
+        now = struct.unpack("<i", g.read(A51_MAP, 4))[0]
+        playing = _u32(g, A51_STATE) == A51_PLAYING
+        if fresh and not playing:
+            self._gone = self._gone or struct.unpack("<H", g.read(A51_PLAYER_SLOT, 2))[0] == 0xFFFF
+            if self._gone and _u32(g, A51_CARRY):
+                g.write(A51_CARRY, struct.pack("<I", 0))
+        if now == here or not playing:
+            return "on: loading %s%s" % (name, " fresh" if fresh else "")
+        self.loading, self.arm, self._arm_again = None, True, 0.0
+        self._loaded = "%s loaded%s" % (next((n for m, n in A51_LEVELS if m == now), "map %d" % now), " fresh" if fresh else "")
+        return "on: %s" % self._loaded
+
+    def _arm(self):
+        g = self.guest
+        if time.monotonic() < self._arm_again:
+            return self.status
+        player = a51_player(g)
+        guns = {gun: obj for gun in A51_STARTER_GUNS + A51_OTHER_GUNS for obj in [a51_gun(g, player, gun)] if obj}
+        if _u32(g, player + 0x244) in guns:
+            self.arm = False
+            return "on: %s" % self._loaded
+        give = [gun for gun in A51_STARTER_GUNS if gun in guns] or [gun for gun in A51_OTHER_GUNS if gun in guns][:2]
+        if not give:
+            self.arm = False
+            return "on: %s, this level has no guns to give" % self._loaded
+        try:
+            for gun in give:
+                if struct.unpack("<f", g.read(player + 0x130 + gun * 4, 4))[0] <= 0.0:
+                    self.caller.call(A51_ADD_ITEM, player, gun, convention="thiscall", title_id=0x4D570005, when="safe")
+                a51_fill(g, guns[gun])
+            if _u32(g, player + 0x244) not in guns:
+                self.caller.call(A51_SWITCH_GUN, "ecx=1", "esi=%d" % player, "edi=%d" % give[0], 1,
+                                 convention="stdcall", title_id=0x4D570005, when="safe")
+        except SafePointTimeout:
+            self._arm_again = time.monotonic() + 3.0
+            return "on: %s, waiting to hand you a gun" % self._loaded
+        except Exception:
+            self.arm = False
+            raise
+        self.arm = False
+        return "on: %s, gave you the %s" % (self._loaded, " and ".join(A51_WEAPONS[gun] for gun in give))
+
+    def begin(self):
+        self._want()
+        return self._ask()
+
+    def repick(self):
+        pass
+
+    def tick(self, dt):
+        if self.loading:
+            return self._check()
+        if self.arm:
+            return self._arm()
+        return self.status

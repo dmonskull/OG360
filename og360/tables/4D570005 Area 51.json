@@ -1,0 +1,367 @@
+{
+ "title_id": "4D570005",
+ "title": "Area51",
+ "switches": [
+  {
+   "name": "God mode",
+   "writes": [
+    {
+     "address": "36A040",
+     "type": "u32",
+     "on": "0x84430",
+     "off": "restore",
+     "once": true
+    }
+   ]
+  },
+  {
+   "name": "Cant die",
+   "writes": [
+    {
+     "address": "player + C8",
+     "type": "u32",
+     "on": "0",
+     "off": "restore"
+    }
+   ]
+  },
+  {
+   "name": "Infinite health",
+   "writes": [
+    {
+     "address": "player + B4",
+     "type": "float",
+     "on": "100",
+     "off": ""
+    },
+    {
+     "address": "player + B8",
+     "type": "float",
+     "on": "100",
+     "off": ""
+    },
+    {
+     "address": "player + BC",
+     "type": "float",
+     "on": "0",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Unlimited ammo",
+   "driver": "a51.ammo",
+   "writes": []
+  },
+  {
+   "name": "Unlimited grenades",
+   "writes": [
+    {
+     "address": "player + 17C",
+     "type": "float",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "player + 180",
+     "type": "float",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "player + 184",
+     "type": "float",
+     "on": "5",
+     "off": ""
+    },
+    {
+     "address": "player + 188",
+     "type": "float",
+     "on": "5",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "Full mutation meter",
+   "writes": [
+    {
+     "address": "player + 2540",
+     "type": "float",
+     "on": "100",
+     "off": ""
+    }
+   ]
+  },
+  {
+   "name": "All weapons",
+   "writes": [],
+   "driver": "a51.all_weapons"
+  },
+  {
+   "name": "Slow motion",
+   "group": "speed",
+   "writes": [
+    {
+     "address": "3D1DEC",
+     "type": "float",
+     "on": "0.5",
+     "off": "1"
+    }
+   ]
+  },
+  {
+   "name": "Bullet time",
+   "group": "speed",
+   "writes": [
+    {
+     "address": "3D1DEC",
+     "type": "float",
+     "on": "0.5",
+     "off": "1"
+    },
+    {
+     "address": "3D1DF0",
+     "type": "float",
+     "on": "2",
+     "off": "1"
+    }
+   ]
+  },
+  {
+   "name": "Double speed",
+   "group": "speed",
+   "writes": [
+    {
+     "address": "3D1DEC",
+     "type": "float",
+     "on": "2",
+     "off": "1"
+    }
+   ]
+  },
+  {
+   "name": "Level select (skip or go to a level)",
+   "driver": "a51.level_select",
+   "writes": [],
+   "pick": {
+    "from": "driver"
+   }
+  },
+  {
+   "name": "Unlock all lore and secrets",
+   "writes": [
+    {
+     "address": "profile + 3D",
+     "type": "u32",
+     "on": "|0x1F1F1F1F",
+     "off": "",
+     "once": true
+    },
+    {
+     "address": "profile + 41",
+     "type": "u32",
+     "on": "|0x1F1F1F1F",
+     "off": "",
+     "once": true
+    },
+    {
+     "address": "profile + 45",
+     "type": "u32",
+     "on": "|0x1F1F1F1F",
+     "off": "",
+     "once": true
+    },
+    {
+     "address": "profile + 49",
+     "type": "u32",
+     "on": "|0x1F1F1F1F",
+     "off": "",
+     "once": true
+    },
+    {
+     "address": "profile + 4D",
+     "type": "u16",
+     "on": "|0x1F1F",
+     "off": "",
+     "once": true
+    },
+    {
+     "address": "profile + 4F",
+     "type": "u8",
+     "on": "|0x1F",
+     "off": "",
+     "once": true
+    },
+    {
+     "address": "profile + 50",
+     "type": "u32",
+     "on": "90",
+     "off": "",
+     "once": true
+    },
+    {
+     "address": "profile + 58",
+     "type": "u32",
+     "on": "21",
+     "off": "",
+     "once": true
+    },
+    {
+     "address": "profile + D3F0",
+     "type": "u32",
+     "on": "|0x1380",
+     "off": "",
+     "once": true
+    },
+    {
+     "address": "profile + D3F0",
+     "type": "u32",
+     "on": "&~0x400",
+     "off": "",
+     "once": true
+    }
+   ]
+  }
+ ],
+ "entries": [
+  {
+   "name": "Player health",
+   "address": "player + B4",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Max health",
+   "address": "player + C0",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Can die",
+   "address": "player + C8",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Spawn protection",
+   "address": "player + E0",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Mutagen",
+   "address": "player + 2540",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Position x",
+   "address": "player + 40",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Position y (up)",
+   "address": "player + 44",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Position z",
+   "address": "player + 48",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Gun in your hands",
+   "address": "player + 244",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Frag grenades",
+   "address": "player + 17C",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Grav grenades",
+   "address": "player + 180",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Jumping bean grenades",
+   "address": "player + 184",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Enhanced jumping beans",
+   "address": "player + 188",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "World speed",
+   "address": "3D1DEC",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Player speed",
+   "address": "3D1DF0",
+   "type": "float",
+   "value": ""
+  },
+  {
+   "name": "Difficulty",
+   "address": "39DE04",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "Campaign entry",
+   "address": "43593C",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "Map id",
+   "address": "487F38",
+   "type": "i32",
+   "value": ""
+  },
+  {
+   "name": "Game state",
+   "address": "43535C",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Lore found",
+   "address": "profile + 50",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Secrets unlocked",
+   "address": "profile + 58",
+   "type": "u32",
+   "value": ""
+  },
+  {
+   "name": "Profile flags",
+   "address": "profile + D3F0",
+   "type": "u32",
+   "value": ""
+  }
+ ],
+ "patches": [],
+ "calls": [],
+ "symbols": {
+  "player": "object(488EBC + ([488960] & FFFF) * 20, 36A010)",
+  "profile": "43E2B0"
+ }
+}

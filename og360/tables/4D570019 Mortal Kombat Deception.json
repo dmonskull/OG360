@@ -55,39 +55,45 @@
      "address": "5FDFA0",
      "type": "i32",
      "on": "99999",
-     "off": "restore"
+     "off": ""
     },
     {
      "address": "5FDFA4",
      "type": "i32",
      "on": "99999",
-     "off": "restore"
+     "off": ""
     },
     {
      "address": "5FDFA8",
      "type": "i32",
      "on": "99999",
-     "off": "restore"
+     "off": ""
     },
     {
      "address": "5FDFAC",
      "type": "i32",
      "on": "99999",
-     "off": "restore"
+     "off": ""
     },
     {
      "address": "5FDFB0",
      "type": "i32",
      "on": "99999",
-     "off": "restore"
+     "off": ""
     },
     {
      "address": "5FDFB4",
      "type": "i32",
      "on": "99999",
-     "off": "restore"
+     "off": ""
     }
    ]
+  },
+  {
+   "name": "Free camera (controller 1)",
+   "driver": "mk.free_camera",
+   "group": "camera",
+   "writes": []
   }
  ],
  "entries": [
@@ -189,7 +195,19 @@
   }
  ],
  "patches": [],
- "calls": [],
+ "calls": [
+  {
+   "name": "Save profile (player 1)",
+   "address": "0x0017A990",
+   "args": [
+    "0"
+   ],
+   "convention": "cdecl",
+   "string": "",
+   "expect": "",
+   "saves": true
+  }
+ ],
  "symbols": {
   "p1_block": "620FC4",
   "p2_block": "621030",

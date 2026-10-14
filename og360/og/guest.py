@@ -379,6 +379,8 @@ class Guest:
                 return self.datum(*args, memo=memo)
             if name == "block":
                 return self.block(*args)
+            if name == "object":
+                return self.object(*args)
             raise ValueError("unknown function %s()" % name)
 
         return address.evaluate(address.parse(expr), word, self.read_u32, call) & 0xFFFFFFFF
@@ -388,6 +390,15 @@ class Guest:
         if not 0 <= index < count or count > 0x10000 or not elements:
             raise Empty("nothing there right now (block %08X has %d)" % (header, count))
         return (elements + index * stride) & 0xFFFFFFFF
+
+    def object(self, where, vtable):
+        try:
+            obj = self.read_u32(where)
+            if obj and self.read_u32(obj) == vtable:
+                return obj
+        except (Unmapped, Unreadable):
+            pass
+        raise Empty("nothing there right now")
 
     def datum(self, array, handle, memo=None):
         memo = {} if memo is None else memo

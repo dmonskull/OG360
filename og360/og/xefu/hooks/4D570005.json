@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "name": "Area 51 player logic",
+  "point": "the player's per-frame logic (gameplay only)",
+  "title_id": 1297547269,
+  "xbe_timestamp": 1112829757,
+  "checks": [
+    {
+      "address": 365936,
+      "size": 96,
+      "sha256": "6b9e78afbfe4134441f80d53624178e37384ce55e81b3ce40402592fb97fbcea"
+    },
+    {
+      "address": 1068720,
+      "size": 64,
+      "sha256": "aa96a77aec4eb77e719ed0afa3a1f215938606b27ec8ba0cb01662ff533fb000"
+    },
+    {
+      "address": 1777520,
+      "size": 20,
+      "sha256": "7dc0353b5d70f642e0b020faee1d6b36f06607da9854bc906132582ba780bbc9"
+    }
+  ],
+  "pointer": {
+    "address": 3580116
+  },
+  "original": 365936,
+  "hook": {
+    "blocks": [
+      {
+        "address": 2768929,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 2768913,
+        "preceding_bytes": "0f1005686a3900f30f110528144b00c3"
+      },
+      {
+        "address": 2768961,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 2768945,
+        "preceding_bytes": "0f1005686a3900f30f11052c144b00c3"
+      },
+      {
+        "address": 2768993,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 2768977,
+        "preceding_bytes": "0f1005686a3900f30f110530144b00c3"
+      },
+      {
+        "address": 2769025,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 2769009,
+        "preceding_bytes": "0f1005686a3900f30f110534144b00c3"
+      },
+      {
+        "address": 2769057,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 2769041,
+        "preceding_bytes": "0f1005686a3900f30f110538144b00c3"
+      },
+      {
+        "address": 2769105,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 2769089,
+        "preceding_bytes": "0f1005686a3900f30f1105b0144b00c3"
+      },
+      {
+        "address": 2769137,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 2769121,
+        "preceding_bytes": "0f1005686a3900f30f1105b4144b00c3"
+      },
+      {
+        "address": 2769189,
+        "original": "cccccccccccccccccccccc",
+        "preceding_address": 2769173,
+        "preceding_bytes": "008c2a00a3c4144b00e87d77fbff59c3"
+      },
+      {
+        "address": 2769237,
+        "original": "cccccccccccccccccccccc",
+        "preceding_address": 2769221,
+        "preceding_bytes": "108c2a00a3bc144b00e84d77fbff59c3"
+      },
+      {
+        "address": 2769285,
+        "original": "cccccccccccccccccccccc",
+        "preceding_address": 2769269,
+        "preceding_bytes": "208c2a00a3b8144b00e81d77fbff59c3"
+      },
+      {
+        "address": 2769333,
+        "original": "cccccccccccccccccccccc",
+        "preceding_address": 2769317,
+        "preceding_bytes": "308c2a00a3c0144b00e8ed76fbff59c3"
+      },
+      {
+        "address": 2769361,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 2769345,
+        "preceding_bytes": "0f1005686a3900f30f1105c8144b00c3"
+      },
+      {
+        "address": 2769393,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 2769377,
+        "preceding_bytes": "0f1005686a3900f30f1105cc144b00c3"
+      }
+    ]
+  },
+  "mailbox": {
+    "address": 77792
+  },
+  "hook_sha256": "b1ea60f65d01095111df885b1592a977b729180156457c1f17c463c22690ece1",
+  "thread": "hook",
+  "wait": 6.0
+}

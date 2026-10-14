@@ -309,7 +309,7 @@ def call(client, target, arguments=(), *, registers=None, string=None, scratch=N
         if not clean:
             if mb['pending'] or mb['running']:
                 raise Unavailable("hook mailbox is busy (a call is still queued or running)")
-            if mb['main'] != main:
+            if mb['main'] != main and h.get('thread') != 'hook':
                 raise Unavailable("hook mailbox has something weird in it")
         slot = locate(read, h)
         held_value = u32(slot)
@@ -353,6 +353,23 @@ def call(client, target, arguments=(), *, registers=None, string=None, scratch=N
         if fresh:
             for b, c in zip(blocks, code):
                 write(b['address'], c)
+        if h.get('thread') == 'hook':
+            write(mailbox, struct.pack('<6I', 0, 0, 0, 0, 0, 0))
+            if held_value != hook:
+                put(slot, hook)
+                held_value = hook
+            go()
+            wait = float(h.get('wait', HOOK_WAIT))
+            deadline = time.monotonic() + wait
+            while time.monotonic() < deadline and box()['entries'] < 3:
+                time.sleep(0.02)
+            stop()
+            seen = box()
+            report['learned'] = seen
+            if seen['entries'] < 3 or not seen['last_thread']:
+                raise SafePointTimeout("%s wasnt reached in %g s, nothing ran" % (h.get('point', 'the hook point'), wait))
+            main = report['main_thread'] = seen['last_thread']
+            clean = False
         if clean:
             write(mailbox, struct.pack('<6I', main, 0, 0, 0, 0, 0))
         else:
@@ -365,7 +382,8 @@ def call(client, target, arguments=(), *, registers=None, string=None, scratch=N
         save()
         go()
         say("game resumed, waiting for the main thread to reach %s" % h['point'])
-        deadline = time.monotonic() + HOOK_WAIT
+        wait = float(h.get('wait', HOOK_WAIT))
+        deadline = time.monotonic() + wait
         while time.monotonic() < deadline:
             done = struct.unpack('<I', read(request + COMPLETED, 4))[0]
             mb = box()
@@ -381,7 +399,7 @@ def call(client, target, arguments=(), *, registers=None, string=None, scratch=N
             put(mailbox + PENDING, 0)
             report['withdrawn'] = True
             raise SafePointTimeout("main thread didnt reach the hook in %g s, call pulled without running"
-                                   % HOOK_WAIT)
+                                   % wait)
         if mb['running']:
             raise RuntimeError("call is still running in the hook, left it")
         if done != 1 or mb['pending']:

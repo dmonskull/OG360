@@ -1,7 +1,7 @@
 import re
 
 TOKEN = re.compile(r"\s*([A-Za-z_][A-Za-z0-9_.:$@?]*|[0-9][0-9A-Fa-fxX]*|[\[\]()+\-*&,])")
-FUNCTIONS = {"datum": 2, "block": 3}
+FUNCTIONS = {"datum": 2, "block": 3, "object": 2}
 CLOSING = {"[": "]", "(": ")"}
 
 

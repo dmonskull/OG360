@@ -137,7 +137,7 @@ calling right away runs your function in the middle of whatever that thread was 
 - queue the apc to that thread with +0x49 set but dont set the interrupt bit. the kernel runs it as the thread wakes up, before the game gets control back.
 - if it doesnt wake up in 3 seconds pull the apc back out and call right away instead.
 
-some games need more. mafia waits inside directsound which holds its own lock, so OG360 only calls when its main thread is in its frame limiter sleep. halo 2s main thread never waits at all, so for one call OG360 points a pointer the game calls every frame (the cloth widget update at 0x4674F0) at a small hook in int3 gaps at the end of .text and puts it back after.
+some games need more. mafia waits inside directsound which holds its own lock, so OG360 only calls when its main thread is in its frame limiter sleep. halo 2s main thread never waits at all, so for one call OG360 points a pointer the game calls every frame (the cloth widget update at 0x4674F0) at a small hook in int3 gaps at the end of .text and puts it back after. mk deception runs everything as tasks on its main thread, so its hook sits in the task sleep every task goes through. area 51 runs its game logic on a second thread with the same stack size as the main one, so OG360 points the players per frame logic (vtable 0x36A010 +0xC4) at the hook with nothing queued first, sees which thread comes through and only then queues the call for that thread.
 
 ## other xefu versions
 
@@ -165,6 +165,7 @@ all hex:
 
 - xefu turns the x86 into ppc and keeps it forever, and it does that early, right as the game loads. so writing over the games code does nothing, even code the game hasnt run yet. if you change your gate bytes restart the game first, and always write the same bytes to the same spot.
 - new code does run if its somewhere that never had code, like int3 padding, and you get there through a pointer read at runtime, like the apc or a function pointer in data. thats how to change what the game does while its running.
+- area 51s unlimited ammo works like that. switching it on writes a small refill into padding and points each gun classes per frame slot (vtable +0xC4) at it. it checks the gun belongs to you, tops up the clip and the total and goes on to the guns own code, so nothing gets sent while its on.
 - swapping a return address on the stack doesnt work, xefu checks returns against its own copy.
 - xefu only runs code in the ranges it registered (the games xbe sections and the kernels code) so your target has to be in there.
 - max 6 stack args plus eax ecx edx esi edi ebx ebp and xmm0-3 as single floats. no wider xmm values, and only xmm0 comes back.

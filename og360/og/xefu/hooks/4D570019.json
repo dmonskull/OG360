@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "name": "MK Deception task sleep",
+  "point": "the task sleep (every frame, every screen)",
+  "title_id": 1297547289,
+  "xbe_timestamp": 1094630103,
+  "checks": [
+    {
+      "address": 1295776,
+      "size": 100,
+      "sha256": "1a2229e22b71617223210e280be2a7b49aced6a21f0efaab986142c7ea3ecaf2"
+    },
+    {
+      "address": 1293552,
+      "size": 96,
+      "sha256": "310e974ac0a3bb7d8ec643f04cca309115141bc73cf6722839776f30eff4c291"
+    },
+    {
+      "address": 1295472,
+      "size": 60,
+      "sha256": "edbd8d71c4105d5b3e18a31117093642b579297d758fed65a906436484bccdce"
+    }
+  ],
+  "pointer": {
+    "address": 4153008
+  },
+  "original": 1295776,
+  "hook": {
+    "blocks": [
+      {
+        "address": 3035139,
+        "original": "cccccccccccccccccccccccccc",
+        "preceding_address": 3035123,
+        "preceding_bytes": "f95a7f0580c120880a42803a0075e9c3"
+      },
+      {
+        "address": 3035940,
+        "original": "cccccccccccccccccccccccc",
+        "preceding_address": 3035924,
+        "preceding_bytes": "f0e9c64ffaffb838123e00e9666cfbff"
+      },
+      {
+        "address": 3036098,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3036082,
+        "preceding_bytes": "f0e98859faffb8d8133e00e9c86bfbff"
+      },
+      {
+        "address": 3036162,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3036146,
+        "preceding_bytes": "d8e9985dfaffb870143e00e9886bfbff"
+      },
+      {
+        "address": 3036194,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3036178,
+        "preceding_bytes": "f0e9c84efaffb894143e00e9686bfbff"
+      },
+      {
+        "address": 3036226,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3036210,
+        "preceding_bytes": "f0e93d6ffbffb8b8143e00e9486bfbff"
+      },
+      {
+        "address": 3036258,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3036242,
+        "preceding_bytes": "b0e97863faffb850153e00e9286bfbff"
+      },
+      {
+        "address": 3036434,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3036418,
+        "preceding_bytes": "d8e9d84dfaffb8e0173e00e9786afbff"
+      },
+      {
+        "address": 3036466,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3036450,
+        "preceding_bytes": "f0e9f880faffb830183e00e9586afbff"
+      },
+      {
+        "address": 3036530,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3036514,
+        "preceding_bytes": "f0e9d884faffb880183e00e9186afbff"
+      },
+      {
+        "address": 3036658,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3036642,
+        "preceding_bytes": "faff83c40cc3b8f4183e00e99869fbff"
+      },
+      {
+        "address": 3036722,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3036706,
+        "preceding_bytes": "faff83c40cc3b820193e00e95869fbff"
+      },
+      {
+        "address": 3037009,
+        "original": "cccccccccccccccccccccccccccccc",
+        "preceding_address": 3036993,
+        "preceding_bytes": "faff83c40cc3b8001a3e00e93968fbff"
+      },
+      {
+        "address": 3037074,
+        "original": "cccccccccccccccccccccccccccc",
+        "preceding_address": 3037058,
+        "preceding_bytes": "f0e9584bfaffb8501a3e00e9f867fbff"
+      }
+    ]
+  },
+  "mailbox": {
+    "address": 69600
+  },
+  "hook_sha256": "be6565dfca3f11749913789981e3dd1f87e187db8f4b956f2d8da323f83ab19b",
+  "wait": 6.0
+}
