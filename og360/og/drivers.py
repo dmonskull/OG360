@@ -1770,3 +1770,315 @@ class A51LevelSelect(Driver):
         if self.arm:
             return self._arm()
         return self.status
+
+
+A51_FREEZE = 0x42D9CC
+A51_FREEZE_ON = 0x39DDF0
+A51_VIEW = 0x42EA40
+A51_PADS = 0x408F74
+A51_PORTS = 0x4B1CA0
+A51_TELEPORT = 0x57D40
+A51_FLY_ZONE = 0x57AE0
+A51_DROP_POINT = 0x12F80
+A51_PROFILE_FLAGS = 0x44B6A0
+A51_SETTINGS_SLOT = 0x488BB0
+A51_SETTINGS_VTABLE = 0x36F670
+A51_SEE_FAR = 50000.0
+A51_RESOURCES = 0x481F5C
+A51_TEXTURES = 0x409098
+A51_RENDERER = 0x42DA5C
+A51_VEIL = bytes((0xD0, 0xD0, 0xD0, 0x58)) * 64
+
+
+def _pieces(at, data):
+    out, off = [], 0
+    while off < len(data):
+        n = min(len(data) - off, 0x80, 0x1000 - ((at + off) & 0xFFF))
+        out.append((at + off, data[off:off + n]))
+        off += n
+    return out
+
+
+def a51_settings(g):
+    slot = struct.unpack("<H", g.read(A51_SETTINGS_SLOT, 2))[0]
+    if slot == 0xFFFF:
+        raise Empty("no level settings")
+    return g.object(A51_SLOTS + slot * 0x20, A51_SETTINGS_VTABLE)
+
+
+A51_DROP_GAP = 15
+A51_DROP_BLOCKS = (0x2A56A1, 0x2A56C1, 0x2A56E1)
+A51_DROP_SHA256 = "b6ace70bf9aa286498c6dd9604e6fcd1459ee19c19345b5e6ccf19a39d22de39"
+
+
+def a51_drop_code():
+    u = lambda v: struct.pack("<I", v)
+    units = [b"\x53", b"\x56",
+             b"\x8b\x74\x24\x0c", b"\x8b\x5c\x24\x10",
+             b"\x53", b"\x8b\xce", b"\xb8" + u(A51_TELEPORT), b"\xff\xd0",
+             b"\x53", b"\x8b\xce", b"\xb8" + u(A51_FLY_ZONE), b"\xff\xd0",
+             b"\x5e", b"\x5b", b"\xc2\x08\x00"]
+    blocks = [{"address": a, "original": "cc" * A51_DROP_GAP} for a in A51_DROP_BLOCKS]
+    pieces = list(zip(A51_DROP_BLOCKS, game_hook.layout(units, blocks)))
+    if hashlib.sha256(b"".join(u(a) + c for a, c in pieces)).hexdigest() != A51_DROP_SHA256:
+        raise RuntimeError("the drop code changed, it cant go into a running game")
+    return pieces
+
+
+def a51_drop_ready(g):
+    pieces = a51_drop_code()
+    states = set()
+    for a, code in pieces:
+        now = g.read(a, A51_DROP_GAP)
+        states.add("fresh" if now == b"\xcc" * A51_DROP_GAP else
+                   "ours" if now == code + b"\xcc" * (A51_DROP_GAP - len(code)) else "other")
+    if states not in ({"fresh"}, {"ours"}):
+        raise ValueError("the padding for the drop has something else in it")
+    if states == {"fresh"}:
+        for a, code in pieces:
+            g.write(a, code)
+        if any(g.read(a, len(code)) != code for a, code in pieces):
+            raise ValueError("the drop didnt write right")
+
+
+@register("a51.free_camera")
+class A51FreeCamera(Driver):
+    rate = 30.0
+    speed = 600.0
+    turn = 1.8
+    pitch_limit = 1.45
+    dead_zone = 0.25
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.flying = False
+        self.player = 0
+        self.zone = self.zone_before = None
+        self.freeze_on_before = 1
+        self.x_held = self.x_ready = False
+        self.invert = False
+        self.ticks = 0
+        self.no_drop = "cant drop you from here"
+        self.settings = 0
+        self.far_before = b""
+        self.fog = []
+
+    def begin(self):
+        g = self.guest
+        state = g.read(A51_MENU_PAUSE, 0x2C)
+        if struct.unpack_from("<I", state, 0x28)[0] != A51_PLAYING or _u32(g, A51_EXIT):
+            raise ValueError("get into a level first")
+        if struct.unpack_from("<I", state, 0)[0]:
+            raise ValueError("unpause the game first")
+        self.player = a51_player(g)
+        if self.caller is not None:
+            try:
+                a51_drop_ready(g)
+                self.no_drop = ""
+            except ValueError as err:
+                self.no_drop = "cant drop you, %s" % err
+        self.freeze_on_before = _u32(g, A51_FREEZE_ON)
+        if not self.freeze_on_before:
+            g.write(A51_FREEZE_ON, struct.pack("<I", 1))
+        g.write(A51_FREEZE, struct.pack("<I", 1))
+        self.flying = True
+        try:
+            self._start()
+        except BaseException:
+            self._land()
+            raise
+        return self._flying()
+
+    def _flying(self):
+        return "on: flying, press X to drop yourself here"
+
+    def _start(self):
+        g = self.guest
+        raw = g.read(A51_VIEW, 0x40)
+        view = struct.unpack("<16f", raw)
+        self.pos, self.pos_w = list(view[0:3]), raw[12:16]
+        fwd = view[12:15]
+        if not all(map(math.isfinite, view[0:3] + fwd)) or not 0.5 < math.sqrt(sum(v * v for v in fwd)) < 1.5:
+            raise ValueError("no view to fly from yet")
+        self.yaw = math.atan2(fwd[0], fwd[2])
+        self.pitch = max(-self.pitch_limit, min(self.pitch_limit, -math.atan2(fwd[1], math.hypot(fwd[0], fwd[2]))))
+        slot = _u32(g, 0x473290 + _u32(g, self.player + 0x684) % 4 * 4)
+        self.invert = bool(_u32(g, A51_PROFILE_FLAGS + slot % 4 * 0xD3F8) & 8)
+        self.zone_before = g.read(self.player + 0x100, 1)[0]
+        self.zone = 0
+        g.write(self.player + 0x100, b"\x00")
+        try:
+            self.settings = a51_settings(g)
+            self.far_before = g.read(self.settings + 0x84, 4)
+            g.write(self.settings + 0x84, struct.pack("<f", A51_SEE_FAR))
+        except Empty:
+            self.settings = 0
+        self._veil()
+        self._port()
+
+    def _fog_texels(self):
+        g = self.guest
+        if not self.settings:
+            return 0
+        handle = struct.unpack("<h", g.read(self.settings + 0x90, 2))[0]
+        if handle < 0:
+            return 0
+        texture = _u32(g, _u32(g, A51_RESOURCES) + handle * 0x98 + 0x84)
+        bitmap = _u32(g, texture + 0x10) if texture else 0
+        if 0 < bitmap < 0xBB9:
+            bitmap = _u32(g, A51_TEXTURES + bitmap * 4)
+        return _u32(g, bitmap + 0x44) if bitmap else 0
+
+    def _veil(self):
+        g = self.guest
+        places = [(self._fog_texels(), True), (_u32(g, A51_RENDERER), False)]
+        for at, level in places:
+            if at:
+                at += 0 if level else 0x50
+                self.fog.append((at, g.read(at, len(A51_VEIL)), level))
+                g.write(at, A51_VEIL)
+
+    def _port(self):
+        g = self.guest
+        index = _u32(g, self.player + 0x684)
+        port = struct.unpack("<i", g.read(A51_PORTS + index * 0x7D8, 4))[0] if index < 4 else -1
+        handles = struct.unpack("<4I", g.read(A51_PADS, 16))
+        if not 0 <= port <= 3 or not handles[port]:
+            port = next((p for p in range(4) if handles[p]), 0)
+        self.port = port
+
+    def _pad(self):
+        raw = self.guest.read(A51_PADS, 0xD4)
+        if not struct.unpack_from("<I", raw, self.port * 4)[0]:
+            return None
+        newest = struct.unpack_from("<I", raw, 0xC4 + self.port * 4)[0] & 1
+        at = 0x14 + (self.port * 2 + newest) * 0x16
+        return raw[at:at + 0x16]
+
+    def _axis(self, raw):
+        v = max(-1.0, min(1.0, raw / 32767.0))
+        return 0.0 if abs(v) < self.dead_zone else math.copysign((abs(v) - self.dead_zone) / (1.0 - self.dead_zone), v)
+
+    def _place(self, left, up, fwd):
+        self.guest.write(A51_VIEW, struct.pack("<3f", *self.pos) + self.pos_w + struct.pack(
+            "<12f", *left, 0.0, *up, 0.0, *fwd, 0.0))
+
+    def _same_player(self):
+        try:
+            return a51_player(self.guest) == self.player
+        except Empty:
+            return False
+
+    def _put_back(self, write):
+        if self.zone_before is not None and self.zone != self.zone_before:
+            write(self.player + 0x100, bytes([self.zone_before]))
+            self.zone = self.zone_before
+        if self.settings:
+            write(self.settings + 0x84, self.far_before)
+            self.settings = 0
+        for at, before, level in reversed(self.fog):
+            for a, piece in _pieces(at, before):
+                write(a, piece)
+        self.fog = []
+
+    def _land(self, zone_back=True):
+        if not self.flying:
+            return
+        self.flying = False
+        g = self.guest
+        try:
+            if zone_back:
+                if not self._same_player():
+                    self.zone = self.zone_before
+                try:
+                    if self.settings and a51_settings(g) != self.settings:
+                        self.settings = 0
+                except Empty:
+                    self.settings = 0
+                if not self.settings:
+                    self.fog = [f for f in self.fog if not f[2]]
+                self._put_back(g.write)
+        finally:
+            g.write(A51_FREEZE, struct.pack("<I", 0))
+            if not self.freeze_on_before:
+                g.write(A51_FREEZE_ON, struct.pack("<I", 0))
+
+    def _ended(self):
+        g = self.guest
+        state = g.read(A51_MENU_PAUSE, 0x2C)
+        if struct.unpack_from("<I", state, 0x28)[0] != A51_PLAYING or (self.ticks % 8 == 0 and _u32(g, A51_EXIT)):
+            self._land(zone_back=False)
+            return "on: stopped flying, the level changed"
+        if struct.unpack_from("<I", state, 0)[0]:
+            self._land()
+            return "on: stopped flying when you paused, switch off and on to fly again"
+        return None
+
+    def tick(self, dt):
+        if not self.flying:
+            return self.status
+        self.ticks += 1
+        if self.ticks % 4 == 0:
+            ended = self._ended()
+            if ended:
+                return ended
+        pad = self._pad()
+        if pad is None:
+            self._port()
+            look_x = look_y = move_x = move_y = rise = 0.0
+            boost, x_down = 1.0, False
+        else:
+            analog = pad[6:14]
+            lx, ly, rx, ry = struct.unpack_from("<4h", pad, 0xE)
+            look_x, look_y, move_x, move_y = self._axis(rx), self._axis(ry), self._axis(lx), self._axis(ly)
+            boost = 4.0 if analog[0] > 0x30 else 0.25 if analog[1] > 0x30 else 1.0
+            rise = (analog[7] - analog[6]) / 255.0
+            x_down = analog[2] > 0x30
+        self.yaw -= look_x * self.turn * dt
+        look_y = look_y if self.invert else -look_y
+        self.pitch = max(-self.pitch_limit, min(self.pitch_limit, self.pitch + look_y * self.turn * 0.75 * dt))
+        cp, sp, cy, sy = math.cos(self.pitch), math.sin(self.pitch), math.cos(self.yaw), math.sin(self.yaw)
+        left, up, fwd = (cy, 0.0, -sy), (sp * sy, cp, sp * cy), (sy * cp, -sp, cy * cp)
+        step = self.speed * boost * dt
+        for k in range(3):
+            self.pos[k] += (fwd[k] * move_y - left[k] * move_x) * step
+        self.pos[1] += rise * step
+        self._place(left, up, fwd)
+        drop = self.x_ready and self.x_held and not x_down
+        self.x_ready, self.x_held = self.x_ready or not x_down, x_down
+        if drop:
+            return self._drop()
+        if pad is None:
+            return "waiting: no controller in port %d" % (self.port + 1)
+        return self._flying()
+
+    def _drop(self):
+        g = self.guest
+        if self.no_drop:
+            return "on: flying, %s" % self.no_drop
+        if g.read(A51_DROP_POINT, 16) != bytes(16):
+            return "on: flying, cant drop you right now"
+        player = self.player
+        g.write(A51_DROP_POINT, struct.pack("<4f", *self.pos, 0.0))
+        self.status = "on: dropping you here"
+
+        def ready(write):
+            self._put_back(write)
+            write(A51_FREEZE, struct.pack("<I", 0))
+            if not self.freeze_on_before:
+                write(A51_FREEZE_ON, struct.pack("<I", 0))
+            self.flying = False
+
+        try:
+            self.caller.call(A51_DROP_BLOCKS[0], player, A51_DROP_POINT, convention="stdcall", title_id=0x4D570005,
+                             when="safe", ready=ready)
+            g.write(player + 0x538, struct.pack("<2f", self.pitch, math.atan2(math.sin(self.yaw), math.cos(self.yaw))))
+        except SafePointTimeout:
+            return "on: couldnt drop you, the game didnt get to it, switch off and on to fly again"
+        finally:
+            self._land()
+            g.write(A51_DROP_POINT, bytes(16))
+        return "on: dropped you here, switch off and on to fly again"
+
+    def end(self):
+        self._land()

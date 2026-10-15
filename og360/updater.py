@@ -89,6 +89,40 @@ def newer():
     return None
 
 
+LOG_URL = "https://raw.githubusercontent.com/%s/%s/UPDATES.md"
+
+
+def parse_log(text):
+    out, version, lines = [], None, []
+    for line in text.splitlines():
+        m = re.match(r"##\s+v?(\d+(?:\.\d+)*)\s*$", line.strip())
+        if m:
+            if version:
+                out.append((version, "\n".join(lines).strip()))
+            version, lines = m.group(1), []
+        elif version:
+            lines.append(line)
+    if version:
+        out.append((version, "\n".join(lines).strip()))
+    return out
+
+
+def update_log(rel):
+    repo = (release_info() or {}).get("repo") or REPO
+    mine, theirs = version_tuple(__version__), version_tuple(rel["version"])
+    for ref in ("main", rel.get("tag")):
+        if not ref:
+            continue
+        try:
+            entries = parse_log(_fetch(LOG_URL % (repo, ref)).decode("utf-8", "replace"))
+        except (UpdateError, urllib.error.HTTPError, OSError):
+            continue
+        new = [(v, t) for v, t in entries if mine < version_tuple(v) <= theirs]
+        if new:
+            return new
+    return [(rel["version"], rel.get("notes") or "")]
+
+
 def _download(url, dest, size, progress):
     try:
         with urllib.request.urlopen(_request(url), timeout=60) as r, open(dest, "wb") as f:

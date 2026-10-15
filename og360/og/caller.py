@@ -225,11 +225,11 @@ class FunctionCaller:
         return self.reports / (stamp + '-' + uuid.uuid4().hex[:12] + '.json')
 
     def call(self, target, *arguments, convention='cdecl', expected=None, string=None, scratch=None, title_id=None,
-             when='auto'):
+             when='auto', ready=None):
         with self._lock:
-            return self._call(target, arguments, convention, expected, string, scratch, title_id, when)
+            return self._call(target, arguments, convention, expected, string, scratch, title_id, when, ready)
 
-    def _call(self, target, arguments, convention, expected, string, scratch, title_id, when):
+    def _call(self, target, arguments, convention, expected, string, scratch, title_id, when, ready=None):
         if when not in ('auto', 'safe', 'now'):
             raise ValueError("timing has to be auto, safe or now")
         plan = plan_call(target, arguments, convention)
@@ -265,7 +265,7 @@ class FunctionCaller:
         attempt = 0
         while True:
             try:
-                return self._attempt(plan, expected, string, scratch, title_id, last=attempt == RETRIES)
+                return self._attempt(plan, expected, string, scratch, title_id, last=attempt == RETRIES, ready=ready)
             except kernel_apc.SafePointTimeout:
                 if plan['when'] != 'auto' or title_id in SAFE_RETURNS or title_id in HOOK_ONLY or not self._withdrawn():
                     raise
@@ -296,7 +296,7 @@ class FunctionCaller:
             return False
         return 'published' not in gate and 'cleanup' not in gate
 
-    def _attempt(self, plan, expected, string, scratch, title_id, last=True):
+    def _attempt(self, plan, expected, string, scratch, title_id, last=True, ready=None):
         path = self._report_path()
         self.last_report = path
         gate_path = path.with_suffix('.gate.json')
@@ -306,7 +306,7 @@ class FunctionCaller:
             report['string'] = string
         try:
             return self.console.run(lambda client: self._execute(
-                client, plan, expected, string, scratch, title_id, report, gate_path))
+                client, plan, expected, string, scratch, title_id, report, gate_path, ready))
         except BaseException as exc:
             report['error'] = describe(exc)
             if last or not any(needle in str(exc) for needle in BUSY):
@@ -338,7 +338,7 @@ class FunctionCaller:
             report['hint'] = hint
             self.log.note(hint, "warn")
 
-    def _execute(self, client, plan, expected, string, scratch, title_id, report, gate_path):
+    def _execute(self, client, plan, expected, string, scratch, title_id, report, gate_path, ready=None):
         def validate(r, identity, request):
             info = metadata(lambda a, n: r.read_guest(a, n, identity))
             if title_id is not None and info['title_id'] != title_id:
@@ -357,6 +357,8 @@ class FunctionCaller:
             report['target_validation'] = "game code section, live entry bytes, no offline check"
             self.log.note("target %08X is in %ss code, entry bytes %s" % (
                 target, info['title'] or 'the game', raw[:8].hex(' ').upper()))
+            if ready:
+                ready(lambda a, data: client.write(r.resolve(a, identity).host, bytes(data)))
 
         gate = None
         if plan['when'] != 'now' and not plan.get('extra'):

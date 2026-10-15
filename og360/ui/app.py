@@ -15,6 +15,7 @@ from .memory import MemoryTab
 from .mods import ModsTab
 from .search import SearchTab
 from .tools import ToolsTab
+from .updatebox import UpdateBox
 
 POLL_MS = 3000
 
@@ -44,6 +45,8 @@ class App:
         self._typed_host = host
         self.exit_code = 0
         self._update = None
+        self._update_box = None
+        self._box_shown_for = None
 
         self._header()
         panes = ttk.PanedWindow(self.root, orient="vertical")
@@ -333,10 +336,30 @@ class App:
                 btn = tk.Label(self.update_slot, text="UPDATE", font=HEADING, fg="#ffffff", bg=self.pal["ok"],
                                padx=12, pady=3, cursor="hand2")
                 btn.pack(side="right", padx=(8, 0))
-                btn.bind("<Button-1>", lambda e: self.do_update())
+                btn.bind("<Button-1>", lambda e: self.show_update_box())
                 self.log.info("OG360 %s is out, hit update at the top right" % rel["version"], key="update")
+                if self.s.update_box and self._box_shown_for != rel["version"]:
+                    self._box_shown_for = rel["version"]
+                    self.show_update_box()
         self.tasks.run(updater.newer, found, lambda e: None)
         self.root.after(6 * 3600 * 1000, self.check_updates)
+
+    def show_update_box(self):
+        rel = self._update
+        if not rel or self._update_box is not None:
+            return
+        self._update_box = "loading"
+
+        def show(entries):
+            if self._update_box == "loading" and self._update is rel:
+                self._update_box = UpdateBox(self, rel, entries, self.do_update, self._update_box_closed)
+            elif self._update_box == "loading":
+                self._update_box = None
+
+        self.tasks.run(lambda: updater.update_log(rel), show, lambda e: show([(rel["version"], rel["notes"])]))
+
+    def _update_box_closed(self):
+        self._update_box = None
 
     def do_update(self):
         rel = self._update
@@ -344,11 +367,6 @@ class App:
             return
         if self.busy:
             return self.say("still working on: %s" % self.busy_label)
-        notes = rel["notes"][:700] + ("..." if len(rel["notes"]) > 700 else "")
-        text = "update to %s? you have %s\n\n%sOG360 restarts when its done" % (
-            rel["version"], __version__, (notes + "\n\n") if notes else "")
-        if not messagebox.askyesno("OG360 update", text, parent=self.root):
-            return
 
         def done(version):
             messagebox.showinfo("OG360 update", "updated to %s, restarting now" % version, parent=self.root)

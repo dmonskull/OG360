@@ -149,6 +149,12 @@
    }
   },
   {
+   "name": "Free camera",
+   "driver": "a51.free_camera",
+   "group": "camera",
+   "writes": []
+  },
+  {
    "name": "Unlock all lore and secrets",
    "writes": [
     {

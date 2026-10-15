@@ -165,11 +165,12 @@ all hex:
 
 - xefu turns the x86 into ppc and keeps it forever, and it does that early, right as the game loads. so writing over the games code does nothing, even code the game hasnt run yet. if you change your gate bytes restart the game first, and always write the same bytes to the same spot.
 - new code does run if its somewhere that never had code, like int3 padding, and you get there through a pointer read at runtime, like the apc or a function pointer in data. thats how to change what the game does while its running.
-- area 51s unlimited ammo works like that. switching it on writes a small refill into padding and points each gun classes per frame slot (vtable +0xC4) at it. it checks the gun belongs to you, tops up the clip and the total and goes on to the guns own code, so nothing gets sent while its on.
 - swapping a return address on the stack doesnt work, xefu checks returns against its own copy.
 - xefu only runs code in the ranges it registered (the games xbe sections and the kernels code) so your target has to be in there.
 - max 6 stack args plus eax ecx edx esi edi ebx ebp and xmm0-3 as single floats. no wider xmm values, and only xmm0 comes back.
 - each call stops the game for a second or two so you cant call stuff every frame.
+- a call can take a ready step: a function that runs with the game stopped right before the call gets queued. it gets its own write that goes through the calls connection, the normal one is busy until the call is done. use it to put the game in a state where the hook point runs, like letting a frozen game run again, so the call goes in the very next frame.
+- to run a few game functions in the same frame, call a small helper in int3 padding that calls them one after another, so it takes one call instead of one per function. same rules as any code in padding: only over untouched int3s, and the same bytes every time.
 - xbdm answers way faster while the console is stopped, so do your checks then.
 
 ## credits

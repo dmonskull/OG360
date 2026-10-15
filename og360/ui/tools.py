@@ -57,6 +57,15 @@ class ToolsTab(ScrollFrame):
         ttk.Label(box, foreground=pal["dim"], wraplength=380, justify="left", text=(
             "a folder on the xbox like Hdd:\\Games. leave it empty to search the whole hdd")).pack(anchor="w", pady=(6, 0))
 
+        box = ttk.LabelFrame(left, text="Updates", padding=10)
+        box.pack(fill="x", pady=(12, 0))
+        self.update_box = tk.BooleanVar(value=app.s.update_box)
+        ttk.Checkbutton(box, text="Pop up the update box when theres an update",
+                        variable=self.update_box, command=self._update_box_changed).pack(anchor="w")
+        ttk.Label(box, foreground=pal["dim"], wraplength=380, justify="left", text=(
+            "when its off the update button at the top right still shows up, click it to see whats new")).pack(
+            anchor="w", pady=(6, 0))
+
         box = ttk.LabelFrame(left, text="Address converter", padding=10)
         box.pack(fill="x", pady=(12, 0))
         row = ttk.Frame(box)
@@ -127,6 +136,11 @@ class ToolsTab(ScrollFrame):
         self.app.games.show()
         self.app.say("games tab searches %s now. hit search there to list the games"
                      % (self.app.s.games_folder or "the whole hdd"))
+
+    def _update_box_changed(self):
+        self.app.s.update_box = self.update_box.get()
+        self.app.say("the update box pops up when theres an update" if self.update_box.get() else
+                     "the update box wont pop up anymore, the update button at the top right still opens it")
 
     def _pause_reads_changed(self):
         self.app.s.pause_big_reads = self.pause_reads.get()

@@ -75,6 +75,15 @@ class Session:
         if self.console:
             self.console.pause_big_reads = bool(on)
 
+    @property
+    def update_box(self):
+        return bool(self.config.get("update_box", True))
+
+    @update_box.setter
+    def update_box(self, on):
+        self.config["update_box"] = bool(on)
+        self._save_config()
+
 
     def connect(self, host, how="typed"):
         host = (host or "").strip()

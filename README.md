@@ -13,7 +13,7 @@ the memory tools work on any og xbox game. these ones also come with ready made 
 - gauntlet dark legacy (just a few values for now)
 - destroy all humans
 - mortal kombat deception (unlocks, free camera, save your profile)
-- area 51 (god mode, unlimited ammo, all weapons, level select, unlock all secrets)
+- area 51 (god mode, unlimited ammo, all weapons, level select, free camera, unlock all secrets)
 - dave mirra freestyle bmx 2 (unlocks, not tested yet)
 
 more features are planned for the future.
@@ -46,7 +46,7 @@ made and tested on python 3.13 with tk 9.1. anything from 3.9 up with tkinter wo
 
 **mods** has the ready made stuff for your game. tick a switch to turn it on. values update live and lock keeps one stuck where you set it.
 
-if you want to know how it works or do it yourself check out [HOW-IT-WORKS.md](HOW-IT-WORKS.md).
+if you want to know how it works or do it yourself check out [HOW-IT-WORKS.md](HOW-IT-WORKS.md). whats new in each version is in [UPDATES.md](UPDATES.md).
 
 ## credits
 
